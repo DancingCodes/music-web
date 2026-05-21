@@ -2,7 +2,6 @@
 import Navbar from './components/Navbar.vue'
 import PlayerBar from './components/PlayerBar.vue'
 import ToastContainer from './components/ToastContainer.vue'
-import LyricModal from './components/LyricModal.vue'
 </script>
 
 <template>
@@ -13,6 +12,5 @@ import LyricModal from './components/LyricModal.vue'
     </main>
     <PlayerBar />
     <ToastContainer />
-    <LyricModal />
   </div>
 </template>

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, nextTick } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { player, seek } from '../stores/player.js'
 
 const show = ref(false)
@@ -28,13 +28,9 @@ function parseLyric(lyric) {
   return lines
 }
 
-const lyrics = ref([])
+const lyrics = computed(() => parseLyric(player.current?.lyric))
 const currentIdx = ref(-1)
 let animFrame
-
-watch(() => player.current?.lyric, (lyric) => {
-  lyrics.value = parseLyric(lyric)
-})
 
 function onTick() {
   if (!show.value) {
@@ -77,6 +73,7 @@ watch(show, (v) => {
         <h2 class="text-white text-lg font-bold mb-1">{{ player.current?.name }}</h2>
         <p class="text-white/60 text-sm mb-8">{{ player.current?.artists }}</p>
         <div ref="lyricEl" class="flex-1 w-full overflow-y-auto text-center space-y-4 scrollbar-hide mb-6">
+          <p v-if="lyrics.length === 0" class="text-white/30 text-sm mt-10">暂无歌词</p>
           <p
             v-for="(l, i) in lyrics"
             :key="i"

@@ -54,6 +54,13 @@ async function onSave(music) {
       <button @click="onSearch" class="px-6 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-medium cursor-pointer transition-colors">搜索</button>
     </div>
 
+    <div v-if="keyword && !loading && results.length === 0" class="text-center py-16 text-slate-400 dark:text-slate-500 text-sm">没有找到相关歌曲</div>
+
+    <div v-if="!keyword && results.length === 0" class="flex flex-col items-center justify-center py-20 text-slate-400 dark:text-slate-500">
+      <svg viewBox="0 0 24 24" class="w-12 h-12 mb-4" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <p class="text-sm">输入歌名或歌手名，搜索网易云曲库</p>
+    </div>
+
     <div v-if="results.length" class="text-sm text-slate-500 dark:text-slate-400 mb-3">搜索结果 {{ total }} 首</div>
 
     <div v-if="loading" class="space-y-3">

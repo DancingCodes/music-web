@@ -11,14 +11,18 @@ const total = ref(0)
 const keyword = ref('')
 const pageNo = ref(1)
 const deleting = ref(null)
+const loading = ref(true)
 
 async function load() {
+  loading.value = true
   try {
     const res = await getMusicList(pageNo.value, 10, keyword.value)
     list.value = res.data.data.list || []
     total.value = res.data.data.total || 0
   } catch (e) {
     showToast('加载失败', 'error')
+  } finally {
+    loading.value = false
   }
 }
 
@@ -49,7 +53,17 @@ onMounted(load)
       <div class="flex items-center text-sm text-slate-500 dark:text-slate-400 px-3">共 {{ total }} 首</div>
     </div>
 
-    <EmptyState v-if="total === 0" />
+    <div v-if="loading" class="space-y-3">
+      <div v-for="i in 3" :key="i" class="flex items-center gap-3 py-3 animate-pulse">
+        <div class="w-10 h-10 rounded bg-slate-200 dark:bg-slate-700" />
+        <div class="flex-1 space-y-2">
+          <div class="h-3 w-24 rounded bg-slate-200 dark:bg-slate-700" />
+          <div class="h-2 w-32 rounded bg-slate-200 dark:bg-slate-700" />
+        </div>
+      </div>
+    </div>
+
+    <EmptyState v-if="!loading && total === 0" />
 
     <SongRow
       v-for="m in list" :key="m.id"

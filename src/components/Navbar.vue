@@ -1,7 +1,14 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 
-const dark = ref(true)
+const saved = localStorage.getItem('theme')
+const isDark = saved === null ? true : saved === 'dark'
+const dark = ref(isDark)
+if (isDark) {
+  document.documentElement.classList.add('dark')
+} else {
+  document.documentElement.classList.remove('dark')
+}
 
 function toggleTheme() {
   dark.value = !dark.value
