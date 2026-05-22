@@ -1,40 +1,44 @@
 <template>
-  <div v-if="show" class="fixed z-1 inset-0 flex items-start justify-center pt-20" @click.self="close">
-    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" />
-    <div
-      class="relative bg-white rounded-xl w-full max-w-2xl max-h-[70vh] flex flex-col mx-4 border border-gray-200 p-6">
+  <Transition name="search-modal">
+    <div v-if="show" class="fixed z-1 inset-0 flex items-start justify-center pt-20" @click.self="close">
+      <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+      <div
+        class="relative bg-white dark:bg-gray-800 rounded-xl w-full max-w-2xl max-h-[70vh] flex flex-col mx-4 border border-gray-200 dark:border-gray-700 p-6 search-modal-panel">
       <div class="flex justify-end">
-        <X @click="close" class="w-5 h-5 text-gray-500 hover:text-gray-700 cursor-pointer" />
+        <X @click="close" class="w-5 h-5 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer" />
       </div>
 
-      <input v-model="keyword" @keyup.enter="onSearch" placeholder="搜索网易云歌曲..."
-        class="mt-4 px-4 py-2 leading-0 box-border bg-transparent border border-solid border-gray-300 rounded-xl text-gray-900 text-sm outline-none placeholder:text-gray-400 focus:border-red focus:ring-1 focus:ring-red/20 transition-colors duration-200" />
+      <div class="mt-4 relative">
+        <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-500 pointer-events-none" />
+        <input v-model="keyword" @keyup.enter="onSearch" placeholder="搜索网易云歌曲..."
+          class="w-full pl-9 pr-4 py-2 leading-0 box-border bg-transparent border border-solid border-gray-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-gray-100 text-sm outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-red focus:ring-1 focus:ring-red/20 transition-colors duration-200" />
+      </div>
 
-      <div v-if="results.length" class="text-xs text-gray-500 mt-2 ml-1">{{ total }} 首结果</div>
+      <div v-if="results.length" class="text-xs text-gray-500 dark:text-gray-400 mt-2 ml-1">{{ total }} 首结果</div>
 
       <div class="flex-1 overflow-y-auto px-1 [&::-webkit-scrollbar]:hidden" style="scrollbar-width:none;-ms-overflow-style:none">
         <template v-if="loading && !results.length">
-          <div v-for="n in 5" :key="n" class="flex items-center gap-3 py-2.5 border-b border-gray-100">
+          <div v-for="n in 5" :key="n" class="flex items-center gap-3 py-2.5 border-b border-gray-100 dark:border-gray-700">
             <div class="flex-1 min-w-0 space-y-2">
-              <div class="h-3.5 rounded bg-gray-200 animate-pulse w-56" />
-              <div class="h-3 rounded bg-gray-100 animate-pulse w-36" />
+              <div class="h-3.5 rounded bg-gray-200 dark:bg-gray-700 animate-pulse w-56" />
+              <div class="h-3 rounded bg-gray-100 dark:bg-gray-800 animate-pulse w-36" />
             </div>
-            <div class="w-12 h-6 rounded-full bg-gray-200 animate-pulse shrink-0" />
+            <div class="w-12 h-6 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse shrink-0" />
           </div>
         </template>
 
-        <div v-if="keyword && !loading && !results.length" class="text-center py-16 text-gray-500 text-sm">
+        <div v-if="keyword && !loading && !results.length" class="text-center py-16 text-gray-500 dark:text-gray-400 text-sm">
           没有找到相关歌曲</div>
 
-        <div v-if="!keyword && !results.length" class="flex flex-col items-center justify-center py-16 text-gray-500">
+        <div v-if="!keyword && !results.length" class="flex flex-col items-center justify-center py-16 text-gray-500 dark:text-gray-400">
           <Search class="w-8 h-8 mb-3" />
           <p class="text-sm">输入歌名或歌手名，搜索网易云曲库</p>
         </div>
 
-        <div v-for="m in results" :key="m.id" class="flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer border-b border-gray-100 hover:bg-gray-100 transition-colors duration-200">
+        <div v-for="m in results" :key="m.id" class="flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer border-b border-gray-100 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
           <div class="flex-1 min-w-0">
             <div class="text-sm truncate">{{ m.name }}</div>
-            <div class="text-xs text-gray-500 truncate mt-0.5">{{ artistNames(m) }} · {{ formatTime(m.duration) }}
+            <div class="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">{{ artistNames(m) }} · {{ formatTime(m.duration) }}
             </div>
           </div>
           <div v-if="!savedIds.has(m.id)" @click="onSave(m)"
@@ -43,17 +47,23 @@
             <Loader2 v-if="savingIds.has(m.id)" class="w-3.5 h-3.5 animate-spin" />
             <span v-else>保存</span>
           </div>
-          <span v-else class="text-xs text-gray-400">已保存</span>
+          <span v-else class="text-xs text-gray-400 dark:text-gray-500">已保存</span>
         </div>
 
         <div v-if="results.length" class="text-center py-4">
           <div v-if="results.length < total" @click="loadMore"
-            class="text-sm cursor-pointer text-gray-600 hover:text-red transition-colors duration-200">{{ loading ? '加载中...' : '加载更多' }}</div>
-          <div v-else class="text-sm text-gray-400">没有更多了</div>
+            class="flex items-center justify-center gap-1 text-sm cursor-pointer text-gray-600 dark:text-gray-400 hover:text-red dark:hover:text-red-400 transition-colors duration-200">
+            <Loader2 v-if="loading" class="w-3.5 h-3.5 animate-spin" />
+            <span>{{ loading ? 'Loading...' : 'Load More' }}</span>
+          </div>
+          <div v-else class="flex items-center py-2">
+            <div class="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
+          </div>
         </div>
       </div>
     </div>
   </div>
+  </Transition>
 </template>
 
 <script setup>
@@ -126,3 +136,27 @@ const artistNames = (m) => {
   return a || ''
 }
 </script>
+
+<style scoped>
+.search-modal-enter-active,
+.search-modal-leave-active {
+  transition: opacity 0.2s ease;
+}
+.search-modal-enter-from,
+.search-modal-leave-to {
+  opacity: 0;
+}
+
+.search-modal-panel {
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.search-modal-enter-from .search-modal-panel {
+  transform: scale(0.95) translateY(-10px);
+  opacity: 0;
+}
+.search-modal-leave-to .search-modal-panel {
+  transform: scale(0.95) translateY(-10px);
+  opacity: 0;
+}
+</style>

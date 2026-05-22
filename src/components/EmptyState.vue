@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col items-center justify-center py-24 text-gray-400">
+  <div class="flex flex-col items-center justify-center py-24 text-gray-400 dark:text-gray-500">
     <Music class="w-12 h-12 mb-5" />
     <p class="text-sm mb-5">还没有收藏歌曲</p>
     <div @click="$emit('search')"
