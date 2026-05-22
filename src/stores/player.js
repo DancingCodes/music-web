@@ -98,7 +98,7 @@ export function toggle() {
 }
 
 export function next() {
-  if (player.queue.length === 0) return
+  if (!player.queue.length) return
   let i
   if (player.playMode === 'shuffle') {
     i = Math.floor(Math.random() * player.queue.length)
@@ -109,7 +109,7 @@ export function next() {
 }
 
 export function prev() {
-  if (player.queue.length === 0) return
+  if (!player.queue.length) return
   const i = (player.queueIndex - 1 + player.queue.length) % player.queue.length
   play(player.queue[i], player.queue)
 }

@@ -6,7 +6,7 @@
           <img :src="player.current.pic_url" class="w-12 h-12 rounded-md object-cover shrink-0" />
           <div class="w-32 min-w-0 max-sm:hidden">
             <div class="text-sm truncate">{{ player.current.name }}</div>
-            <div class="text-xs text-neutral-500 truncate mt-0.5">{{ player.current.artists }}</div>
+            <div class="text-xs text-neutral truncate mt-0.5">{{ player.current.artists }}</div>
           </div>
         </div>
 
@@ -18,7 +18,7 @@
             <Play v-else class="w-4.5 h-4.5 ml-0.5" />
           </div>
           <SkipForward class="w-4 h-4 text-neutral-400 hover:text-white cursor-pointer" @click="next" />
-          <div @click="togglePlayMode" class="cursor-pointer text-neutral-500 hover:text-neutral-300 shrink-0">
+          <div @click="togglePlayMode" class="cursor-pointer text-neutral hover:text-neutral-300 shrink-0">
             <Repeat v-if="player.playMode === 'sequential'" class="w-3.5 h-3.5" />
             <Repeat1 v-else-if="player.playMode === 'single'" class="w-3.5 h-3.5" />
             <Shuffle v-else class="w-3.5 h-3.5" />
@@ -31,7 +31,7 @@
 
     <div class="h-2 cursor-pointer bg-neutral-950/95"
       @click="seek(($event.offsetX / $event.currentTarget.offsetWidth) * player.duration)">
-      <div class="h-full bg-red-500 rounded-r-full"
+      <div class="h-full bg-red rounded-r-full"
         :style="{ width: (player.currentTime / player.duration * 100 || 0) + '%' }" />
     </div>
   </div>

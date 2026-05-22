@@ -8,7 +8,7 @@
           class="px-4 py-1.5 rounded text-sm border border-neutral-700 text-neutral-400 hover:bg-neutral-800 cursor-pointer">
           取消</div>
         <div @click="$emit('confirm')"
-          class="px-4 py-1.5 rounded text-sm bg-red-500 hover:bg-red-600 text-white cursor-pointer">确定删除</div>
+          class="px-4 py-1.5 rounded text-sm bg-red hover:bg-red-600 text-white cursor-pointer">确定删除</div>
       </div>
     </div>
   </div>

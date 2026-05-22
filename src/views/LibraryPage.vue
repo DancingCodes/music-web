@@ -2,44 +2,42 @@
   <div class="h-full flex flex-col">
     <div class="shrink-0 pb-6 border-b border-neutral-800 mb-4">
       <div class="flex gap-2.5">
-
         <input v-model="keyword" @keyup.enter="onSearch" placeholder="筛选歌曲..."
           class="flex-1 h-10 px-4 rounded-lg box-border bg-transparent border border-solid border-neutral-700 text-white text-sm outline-none" />
         <div @click="onSearch"
-          class="h-10 px-5 rounded-lg flex items-center text-sm text-white cursor-pointer bg-gradient-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700">
-          搜索</div>
+          class="h-10 px-5 rounded-lg flex items-center text-sm text-white cursor-pointer bg-red hover:bg-red-600">
+          搜索
+        </div>
         <div @click="searchModal?.open()"
-          class="h-10 px-4 rounded-lg flex items-center border border-neutral-700 text-sm text-white cursor-pointer hover:border-neutral-600 hover:bg-neutral-900/50">
-          曲库</div>
+          class="h-10 px-4 rounded-lg flex items-center border border-neutral-700 text-sm text-white cursor-pointer">
+          曲库
+        </div>
       </div>
-      <div v-if="total > 0" class="text-xs text-neutral-500 mt-3 ml-1">{{ total }} 首歌</div>
+      <div v-if="total" class="text-xs text-neutral mt-3 ml-1">{{ total }} 首歌</div>
     </div>
 
     <div class="flex-1 overflow-y-auto" style="scrollbar-width:none;-ms-overflow-style:none">
-      <div v-if="loading" class="text-center py-16 text-neutral-500 text-sm">加载中...</div>
+      <div v-if="loading" class="text-center py-16 text-neutral text-sm">加载中...</div>
 
-      <EmptyState v-if="!loading && total === 0" @search="searchModal?.open()" />
+      <EmptyState v-if="!loading && !total" @search="searchModal?.open()" />
 
-      <div class="space-y-px">
-        <SongRow v-for="(m, i) in list" :key="m.id" :music="m" :index="i + 1" @play="play(m, list)"
-          @delete="deleting = m" />
-      </div>
-
-      <div v-if="list.length > 0" class="text-center pt-8 pb-4">
-        <div v-if="list.length < total" @click="loadMore" class="inline-flex items-center gap-1 text-sm cursor-pointer"
-          :class="loading ? 'text-neutral-600 pointer-events-none' : 'text-neutral-400 hover:text-red-500'">
-          <Loader2 v-if="loading" class="w-3.5 h-3.5 animate-spin" />
-          <span>加载更多</span>
-        </div>
-        <div v-else class="text-sm text-neutral-600">没有更多了</div>
-      </div>
+      <div <SongRow v-for="(m, i) in list" :key="m.id" :music="m" :index="i + 1" @play="play(m, list)"
+        @delete="deleting = m" />
     </div>
 
-    <ConfirmModal :show="!!deleting" :message="deleting ? '确定删除 ' + deleting.name + '？同时会删除云端文件' : ''"
-      @confirm="confirmDelete" @cancel="deleting = null" />
-
-    <SearchModal ref="searchModal" />
+    <div v-if="list.length" class="text-center pt-8 pb-4">
+      <div v-if="list.length < total" @click="loadMore" class="flex items-center gap-1 text-sm cursor-pointer"
+        :class="loading ? 'text-neutral-600 pointer-events-none' : 'text-neutral-400 hover:text-red'">
+        <Loader2 v-if="loading" class="w-3.5 h-3.5 animate-spin" />
+        <span>加载更多</span>
+      </div>
+      <div v-else class="text-sm text-neutral-600">没有更多了</div>
+    </div>
   </div>
+
+  <ConfirmModal :show="deleting" message="确定删除" @confirm="confirmDelete" @cancel="deleting = null" />
+
+  <SearchModal ref="searchModal" />
 </template>
 
 <script setup>
