@@ -11,7 +11,7 @@ export const player = reactive({
   currentTime: 0,
   duration: 0,
   buffered: 0,
-  loop: false,
+  playMode: 'sequential',
 })
 
 audio.addEventListener('play', () => { player.playing = true })
@@ -25,7 +25,7 @@ audio.addEventListener('progress', () => {
 })
 audio.addEventListener('ended', () => {
   player.playing = false
-  if (player.loop) {
+  if (player.playMode === 'single') {
     audio.currentTime = 0
     audio.play()
   } else {
@@ -58,7 +58,12 @@ export function toggle() {
 
 export function next() {
   if (player.queue.length === 0) return
-  const i = (player.queueIndex + 1) % player.queue.length
+  let i
+  if (player.playMode === 'shuffle') {
+    i = Math.floor(Math.random() * player.queue.length)
+  } else {
+    i = (player.queueIndex + 1) % player.queue.length
+  }
   play(player.queue[i], player.queue)
 }
 
@@ -77,6 +82,8 @@ export function setVolume(v) {
   audio.volume = v
 }
 
-export function toggleLoop() {
-  player.loop = !player.loop
+export function togglePlayMode() {
+  const modes = ['sequential', 'single', 'shuffle']
+  const idx = modes.indexOf(player.playMode)
+  player.playMode = modes[(idx + 1) % modes.length]
 }
