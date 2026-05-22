@@ -2,12 +2,12 @@
   <div class="flex-1 flex flex-col p-6 overflow-hidden">
     <div class="flex gap-2.5">
       <input v-model="keyword" @keyup.enter="onSearch" placeholder="请输入歌曲或歌手名称"
-        class="flex-1 h-10 px-4 rounded-lg box-border bg-transparent border border-solid border-gray-300 text-gray-800 text-sm outline-none" />
+        class="flex-1 h-10 px-4 rounded-lg box-border bg-transparent border border-solid border-gray-300 text-gray-900 text-sm outline-none" />
       <div @click="onSearch"
-        class="h-10 px-5 rounded-lg flex items-center text-sm text-white cursor-pointer bg-red-500">
+        class="h-10 px-5 rounded-lg flex items-center text-sm text-white cursor-pointer bg-red hover:bg-red-600">
         搜索</div>
       <div @click="searchModal?.open()"
-        class="h-10 px-4 rounded-lg flex items-center border border-gray-500 text-sm text-gray-500 cursor-pointer">
+        class="h-10 px-4 rounded-lg flex items-center border border-gray-300 text-sm text-gray-900 cursor-pointer hover:border-gray-400">
         曲库</div>
     </div>
     <div v-if="total" class="text-xs text-gray-500 mt-3 ml-1">{{ total }} 首歌</div>
@@ -18,11 +18,11 @@
         @delete="deleting = m" />
       <div v-if="list.length" class="flex justify-center py-4">
         <div v-if="list.length < total" @click="loadMore" class="flex items-center gap-1 text-sm cursor-pointer"
-          :class="loading ? 'text-gray-500 pointer-events-none' : 'text-gray-500 hover:text-red-500'">
+          :class="loading ? 'text-gray-400 pointer-events-none' : 'text-gray-600 hover:text-red'">
           <Loader2 v-if="loading" class="w-3.5 h-3.5 animate-spin" />
           <span>加载更多</span>
         </div>
-        <div v-else class="text-sm text-gray-500">没有更多了</div>
+        <div v-else class="text-sm text-gray-400">没有更多了</div>
       </div>
     </div>
 
@@ -48,7 +48,7 @@ const list = ref([])
 const total = ref(0)
 const keyword = ref('')
 const pageNo = ref(1)
-const pageSize = 10
+const pageSize = 20
 const deleting = ref(null)
 const loading = ref(true)
 const searchModal = ref(null)
