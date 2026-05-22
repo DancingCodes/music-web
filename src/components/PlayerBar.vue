@@ -30,7 +30,7 @@
     </div>
 
     <div class="h-2 cursor-pointer bg-neutral-950/95"
-      @click="seek(($event.offsetX / $event.target.offsetWidth) * player.duration)">
+      @click="seek(($event.offsetX / $event.currentTarget.offsetWidth) * player.duration)">
       <div class="h-full bg-red-500 rounded-r-full"
         :style="{ width: (player.currentTime / player.duration * 100 || 0) + '%' }" />
     </div>
