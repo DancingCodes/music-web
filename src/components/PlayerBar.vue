@@ -1,8 +1,8 @@
 <script setup>
 import { ref } from 'vue'
-import { player, toggle, next, prev, setVolume, toggleLoop } from '../stores/player.js'
+import { player, toggle, next, prev, seek, setVolume, toggleLoop } from '../stores/player.js'
 import { formatTime } from '../utils/format.js'
-import { BackwardIcon, ForwardIcon, PlayIcon, PauseIcon, SpeakerWaveIcon, ArrowPathRoundedSquareIcon } from '@heroicons/vue/24/solid'
+import { IconPrev, IconNext, IconPlay, IconPause, IconSpeaker, IconLoop } from '../utils/icons.js'
 import LyricModal from './LyricModal.vue'
 
 const lyricModal = ref(null)
@@ -18,28 +18,29 @@ const lyricModal = ref(null)
       </div>
       <div class="flex items-center gap-3">
         <button @click="prev" class="text-zinc-500 hover:text-white cursor-pointer transition-colors">
-          <BackwardIcon class="w-5 h-5" />
+          <IconPrev class="w-5 h-5" />
         </button>
         <button @click="toggle" class="text-zinc-200 cursor-pointer">
-          <PauseIcon v-if="player.playing" class="w-8 h-8" />
-          <PlayIcon v-else class="w-8 h-8" />
+          <IconPause v-if="player.playing" class="w-8 h-8" />
+          <IconPlay v-else class="w-8 h-8" />
         </button>
         <button @click="next" class="text-zinc-500 hover:text-white cursor-pointer transition-colors">
-          <ForwardIcon class="w-5 h-5" />
+          <IconNext class="w-5 h-5" />
         </button>
       </div>
       <div class="flex-1 flex items-center gap-2">
         <span class="text-xs text-zinc-500 w-10 text-right">{{ formatTime(player.currentTime * 1000) }}</span>
-        <div class="relative flex-1 h-1 bg-zinc-200 dark:bg-zinc-700 rounded-full cursor-pointer" @click="player.howl?.seek(($event.offsetX / $event.target.offsetWidth) * player.duration)">
+        <div class="relative flex-1 h-1 bg-zinc-200 dark:bg-zinc-700 rounded-full cursor-pointer" @click="seek(($event.offsetX / $event.target.offsetWidth) * player.duration)">
+          <div class="absolute left-0 top-0 h-full bg-zinc-400 dark:bg-zinc-600 rounded-full" :style="{ width: (player.buffered * 100 || 0) + '%' }" />
           <div class="absolute left-0 top-0 h-full bg-emerald-500 rounded-full" :style="{ width: (player.currentTime / player.duration * 100 || 0) + '%' }" />
         </div>
         <span class="text-xs text-zinc-500 w-10">{{ formatTime(player.duration * 1000) }}</span>
       </div>
       <button @click="toggleLoop" class="cursor-pointer" :class="player.loop ? 'text-emerald-500' : 'text-zinc-400 hover:text-white'">
-        <ArrowPathRoundedSquareIcon class="w-5 h-5" />
+        <IconLoop class="w-5 h-5" />
       </button>
       <div class="flex items-center gap-2 w-32">
-        <SpeakerWaveIcon class="w-4 h-4 text-zinc-400" />
+        <IconSpeaker class="w-4 h-4 text-zinc-400" />
         <input type="range" min="0" max="1" step="0.01" :value="player.volume" @input="setVolume(parseFloat($event.target.value))" class="w-full h-1 accent-emerald-500" />
       </div>
     </div>

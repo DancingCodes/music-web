@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch, computed } from 'vue'
 import { player, seek } from '../stores/player.js'
-import { XMarkIcon, PlayIcon, PauseIcon, BackwardIcon, ForwardIcon } from '@heroicons/vue/24/solid'
+import { IconClose, IconPlay, IconPause, IconPrev, IconNext } from '../utils/icons.js'
 
 const show = ref(false)
 const lyricEl = ref(null)
@@ -68,7 +68,7 @@ watch(show, (v) => {
       <div class="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-black/90" />
 
       <button @click="close" class="absolute top-6 right-6 z-20 text-white/40 hover:text-white cursor-pointer">
-        <XMarkIcon class="w-7 h-7" />
+        <IconClose class="w-7 h-7" />
       </button>
 
       <div class="relative z-10 flex-1 flex flex-col items-center justify-center px-8 pt-12 pb-8 overflow-hidden">
@@ -107,12 +107,12 @@ watch(show, (v) => {
             <span class="text-xs text-white/30 w-10">{{ Math.floor(player.duration / 60) }}:{{ String(Math.floor(player.duration % 60)).padStart(2, '0') }}</span>
           </div>
           <div class="flex items-center justify-center gap-8">
-            <BackwardIcon class="w-6 h-6 text-white/40 hover:text-white cursor-pointer" />
+            <IconPrev class="w-6 h-6 text-white/40 hover:text-white cursor-pointer" />
             <button class="text-white cursor-pointer">
-              <PauseIcon v-if="player.playing" class="w-10 h-10" />
-              <PlayIcon v-else class="w-10 h-10" />
+              <IconPause v-if="player.playing" class="w-10 h-10" />
+              <IconPlay v-else class="w-10 h-10" />
             </button>
-            <ForwardIcon class="w-6 h-6 text-white/40 hover:text-white cursor-pointer" />
+            <IconNext class="w-6 h-6 text-white/40 hover:text-white cursor-pointer" />
           </div>
         </div>
       </div>

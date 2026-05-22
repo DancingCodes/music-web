@@ -1,5 +1,6 @@
 <script setup>
 import Navbar from './components/Navbar.vue'
+import LibraryPage from './views/LibraryPage.vue'
 import PlayerBar from './components/PlayerBar.vue'
 import ToastContainer from './components/ToastContainer.vue'
 </script>
@@ -8,11 +9,7 @@ import ToastContainer from './components/ToastContainer.vue'
   <div class="min-h-screen flex flex-col bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white">
     <Navbar />
     <main class="flex-1 max-w-4xl mx-auto w-full px-4 pb-24">
-      <router-view v-slot="{ Component }">
-        <KeepAlive>
-          <component :is="Component" />
-        </KeepAlive>
-      </router-view>
+      <LibraryPage />
     </main>
     <PlayerBar />
     <ToastContainer />

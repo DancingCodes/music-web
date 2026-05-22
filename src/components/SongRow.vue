@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { formatTime } from '../utils/format.js'
 import { player } from '../stores/player.js'
-import { TrashIcon, SpeakerWaveIcon } from '@heroicons/vue/24/outline'
+import { IconTrash, IconSpeaker } from '../utils/icons.js'
 
 const props = defineProps({
   music: Object,
@@ -24,14 +24,14 @@ const isPlaying = computed(() => player.current?.id === props.music.id && player
     />
     <div class="flex-1 min-w-0 cursor-pointer" @click="$emit('play')">
       <div class="flex items-center gap-1.5">
-        <SpeakerWaveIcon v-if="isPlaying" class="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+        <IconSpeaker v-if="isPlaying" class="w-3.5 h-3.5 text-emerald-500 shrink-0" />
         <span class="text-sm font-medium truncate" :class="{ 'text-emerald-500': isPlaying }">{{ music.name }}</span>
       </div>
       <div class="text-xs text-zinc-500 dark:text-zinc-400 truncate">{{ music.artists }} · {{ formatTime(music.duration_ms) }}</div>
     </div>
     <div class="flex items-center gap-2 shrink-0">
       <button v-if="$slots.actions" @click="$emit('delete')" class="text-zinc-400 hover:text-red-500 cursor-pointer transition-colors">
-        <TrashIcon class="w-4 h-4" />
+        <IconTrash class="w-4 h-4" />
       </button>
     </div>
   </div>

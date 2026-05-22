@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { formatTime } from '../utils/format.js'
-import { ArrowPathIcon } from '@heroicons/vue/24/outline'
+import { IconSpinner } from '../utils/icons.js'
 
 const props = defineProps({
   music: Object,
@@ -26,7 +26,7 @@ const artistNames = computed(() => {
     </div>
     <div class="flex items-center gap-2 shrink-0">
       <button v-if="!saved" :disabled="saving" @click="$emit('save')" class="text-xs px-3 py-1 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white cursor-pointer transition-colors disabled:opacity-50">
-        <ArrowPathIcon v-if="saving" class="w-3.5 h-3.5 animate-spin" />
+        <IconSpinner v-if="saving" class="w-3.5 h-3.5 animate-spin" />
         <span v-else>保存</span>
       </button>
     </div>
