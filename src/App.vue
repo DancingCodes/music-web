@@ -4,8 +4,8 @@
       <LibraryPage />
     </main>
     <PlayerBar />
-    <ToastContainer />
   </div>
+  <ToastContainer />
 </template>
 
 <script setup>
