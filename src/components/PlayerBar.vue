@@ -1,5 +1,5 @@
 <template>
-  <div v-if="player.current" class="sticky bottom-0 z-40 bg-white/95 border-t border-gray-200">
+  <div v-if="player.current" class="bg-white/90 b-t b-t-solid b-red-600">
     <div class="px-6 py-2.5">
       <div class="grid grid-cols-3 items-center">
         <div class="flex items-center gap-4">
@@ -29,9 +29,9 @@
       </div>
     </div>
 
-    <div class="h-2 cursor-pointer bg-white/95"
+    <div class="h-2 cursor-pointer"
       @click="seek(($event.offsetX / $event.currentTarget.offsetWidth) * player.duration)">
-      <div class="h-full bg-red rounded-r-full"
+      <div class="h-full bg-red-500 rounded-r-full"
         :style="{ width: (player.currentTime / player.duration * 100 || 0) + '%' }" />
     </div>
   </div>

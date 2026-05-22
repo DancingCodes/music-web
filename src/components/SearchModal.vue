@@ -1,17 +1,16 @@
 <template>
-  <div v-if="show" class="fixed inset-0 z-50 flex items-start justify-center pt-20" @click.self="close">
+  <div v-if="show" class="fixed inset-0 flex items-start justify-center pt-20" @click.self="close">
     <div class="absolute inset-0 bg-black/50" />
-    <div class="relative bg-white rounded-lg w-full max-w-2xl max-h-[70vh] flex flex-col mx-4 border border-gray-200">
-      <div @click="close" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 cursor-pointer z-10">
-        <X class="w-5 h-5" />
-      </div>
-      <div class="flex items-center gap-3 px-4 h-12 border-b border-gray-200">
-        <Search class="w-4 h-4 text-gray-500 shrink-0" />
-        <input v-model="keyword" @keyup.enter="onSearch" placeholder="搜索网易云歌曲..."
-          class="flex-1 h-10 px-4 box-border bg-transparent border border-solid border-gray-300 rounded-lg text-gray-900 text-sm outline-none placeholder:text-gray-400" />
+    <div
+      class="relative bg-white rounded-lg w-full max-w-2xl max-h-[70vh] flex flex-col mx-4 border border-gray-200 p-6">
+      <div class="flex justify-end">
+        <X @click="close" class="w-5 h-5 text-gray-500 hover:text-gray-700 cursor-pointer" />
       </div>
 
-      <div class="flex-1 overflow-y-auto px-4 pt-3" style="scrollbar-width:none;-ms-overflow-style:none">
+      <input v-model="keyword" @keyup.enter="onSearch" placeholder="搜索网易云歌曲..."
+        class="mt-4 px-4 py-2 leading-0 box-border bg-transparent border border-solid border-gray-300 rounded-lg text-gray-900 text-sm outline-none placeholder:text-gray-400" />
+
+      <div class="flex-1 overflow-y-auto px-1" style="scrollbar-width:none;-ms-overflow-style:none">
         <div v-if="keyword && !loading && !results.length" class="text-center py-16 text-gray-500 text-sm">
           没有找到相关歌曲</div>
 
@@ -20,11 +19,9 @@
           <p class="text-sm">输入歌名或歌手名，搜索网易云曲库</p>
         </div>
 
-        <div v-if="results.length" class="text-xs text-gray-500 py-3">{{ total }} 首结果</div>
+        <div v-if="results.length" class="text-xs text-gray-500 py-1">{{ total }} 首结果</div>
 
-        <div v-if="loading" class="text-center py-10 text-gray-500 text-sm">加载中...</div>
-
-        <div v-for="m in results" :key="m.id" class="flex items-center gap-3 py-3 border-b border-gray-200">
+        <div v-for="m in results" :key="m.id" class="flex items-center gap-3 py-2 border-b border-gray-200">
           <div class="flex-1 min-w-0">
             <div class="text-sm truncate">{{ m.name }}</div>
             <div class="text-xs text-gray-500 truncate mt-0.5">{{ artistNames(m) }} · {{ formatTime(m.duration) }}

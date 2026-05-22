@@ -2,7 +2,7 @@
   <div class="flex-1 flex flex-col p-6 overflow-hidden">
     <div class="flex gap-2.5">
       <input v-model="keyword" @keyup.enter="onSearch" placeholder="请输入歌曲或歌手名称"
-        class="flex-1 h-10 px-4 rounded-lg box-border bg-transparent border border-solid border-gray-300 text-gray-900 text-sm outline-none" />
+        class="flex-1 h-10 px-4 rounded-lg box-border bg-transparent border border-solid border-gray-300 text-gray-900 text-sm outline-none placeholder:text-gray-400" />
       <div @click="onSearch"
         class="h-10 px-5 rounded-lg flex items-center text-sm text-white cursor-pointer bg-red hover:bg-red-600">
         搜索</div>
@@ -26,7 +26,7 @@
       </div>
     </div>
 
-    <ConfirmModal :show="deleting" message="确定删除" @confirm="confirmDelete" @cancel="deleting = null" />
+    <ConfirmModal :show="deleting" message="确定删除?" @confirm="confirmDelete" @cancel="deleting = null" />
 
     <SearchModal ref="searchModal" />
   </div>
