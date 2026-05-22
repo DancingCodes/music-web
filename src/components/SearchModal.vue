@@ -1,16 +1,18 @@
 <template>
-  <div v-if="show" class="fixed inset-0 flex items-start justify-center pt-20" @click.self="close">
-    <div class="absolute inset-0 bg-black/50" />
+  <div v-if="show" class="fixed z-1 inset-0 flex items-start justify-center pt-20" @click.self="close">
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" />
     <div
-      class="relative bg-white rounded-lg w-full max-w-2xl max-h-[70vh] flex flex-col mx-4 border border-gray-200 p-6">
+      class="relative bg-white rounded-xl w-full max-w-2xl max-h-[70vh] flex flex-col mx-4 border border-gray-200 p-6">
       <div class="flex justify-end">
         <X @click="close" class="w-5 h-5 text-gray-500 hover:text-gray-700 cursor-pointer" />
       </div>
 
       <input v-model="keyword" @keyup.enter="onSearch" placeholder="搜索网易云歌曲..."
-        class="mt-4 px-4 py-2 leading-0 box-border bg-transparent border border-solid border-gray-300 rounded-lg text-gray-900 text-sm outline-none placeholder:text-gray-400" />
+        class="mt-4 px-4 py-2 leading-0 box-border bg-transparent border border-solid border-gray-300 rounded-xl text-gray-900 text-sm outline-none placeholder:text-gray-400 focus:border-red focus:ring-1 focus:ring-red/20 transition-colors duration-200" />
 
-      <div class="flex-1 overflow-y-auto px-1" style="scrollbar-width:none;-ms-overflow-style:none">
+      <div v-if="results.length" class="text-xs text-gray-500 mt-2 ml-1">{{ total }} 首结果</div>
+
+      <div class="flex-1 overflow-y-auto px-1 [&::-webkit-scrollbar]:hidden" style="scrollbar-width:none;-ms-overflow-style:none">
         <div v-if="keyword && !loading && !results.length" class="text-center py-16 text-gray-500 text-sm">
           没有找到相关歌曲</div>
 
@@ -19,16 +21,14 @@
           <p class="text-sm">输入歌名或歌手名，搜索网易云曲库</p>
         </div>
 
-        <div v-if="results.length" class="text-xs text-gray-500 py-1">{{ total }} 首结果</div>
-
-        <div v-for="m in results" :key="m.id" class="flex items-center gap-3 py-2 border-b border-gray-200">
+        <div v-for="m in results" :key="m.id" class="flex items-center gap-3 py-2 border-b border-gray-200 hover:bg-gray-50 transition-colors duration-200">
           <div class="flex-1 min-w-0">
             <div class="text-sm truncate">{{ m.name }}</div>
             <div class="text-xs text-gray-500 truncate mt-0.5">{{ artistNames(m) }} · {{ formatTime(m.duration) }}
             </div>
           </div>
           <div v-if="!savedIds.has(m.id)" @click="onSave(m)"
-            class="text-xs px-3 py-1 rounded-full bg-red hover:bg-red-600 text-white cursor-pointer"
+            class="text-xs px-3 py-1 rounded-full bg-red-500 hover:bg-red-600 text-white cursor-pointer transition-colors duration-200"
             :class="{ 'opacity-50 pointer-events-none': savingIds.has(m.id) }">
             <Loader2 v-if="savingIds.has(m.id)" class="w-3.5 h-3.5 animate-spin" />
             <span v-else>保存</span>
@@ -38,7 +38,7 @@
 
         <div v-if="results.length" class="text-center py-4">
           <div v-if="results.length < total" @click="loadMore"
-            class="text-sm cursor-pointer text-gray-600 hover:text-red">{{ loading ? '加载中...' : '加载更多' }}</div>
+            class="text-sm cursor-pointer text-gray-600 hover:text-red transition-colors duration-200">{{ loading ? '加载中...' : '加载更多' }}</div>
           <div v-else class="text-sm text-gray-400">没有更多了</div>
         </div>
       </div>
