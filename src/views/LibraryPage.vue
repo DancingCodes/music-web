@@ -78,7 +78,6 @@ async function load(page = 1, append = false) {
       }
     }
     total.value = res.data.data.total || 0
-  } catch {
   } finally {
     loading.value = false
   }
@@ -101,9 +100,9 @@ async function confirmDelete() {
   try {
     await deleteMusic(deleting.value.id)
     showToast('已删除', 'success')
-    deleting.value = null
     load()
-  } catch {
+  } finally {
+    deleting.value = null
   }
 }
 
