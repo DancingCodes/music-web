@@ -1,6 +1,5 @@
 import { reactive } from 'vue'
-
-const audio = new Audio()
+import { Howl } from 'howler'
 
 export const player = reactive({
   current: null,
@@ -10,28 +9,39 @@ export const player = reactive({
   volume: 1,
   currentTime: 0,
   duration: 0,
-  buffered: 0,
   playMode: 'sequential',
 })
 
-audio.addEventListener('play', () => { player.playing = true })
-audio.addEventListener('pause', () => { player.playing = false })
-audio.addEventListener('timeupdate', () => { player.currentTime = audio.currentTime })
-audio.addEventListener('loadedmetadata', () => { player.duration = audio.duration })
-audio.addEventListener('progress', () => {
-  if (audio.buffered.length > 0 && audio.duration) {
-    player.buffered = audio.buffered.end(audio.buffered.length - 1) / audio.duration
+let sound = null
+let timeRaf = null
+
+function stopTimeLoop() {
+  if (timeRaf) {
+    cancelAnimationFrame(timeRaf)
+    timeRaf = null
   }
-})
-audio.addEventListener('ended', () => {
-  player.playing = false
-  if (player.playMode === 'single') {
-    audio.currentTime = 0
-    audio.play()
-  } else {
-    next()
+}
+
+function startTimeLoop() {
+  stopTimeLoop()
+  function tick() {
+    if (!sound || !player.playing) {
+      timeRaf = null
+      return
+    }
+    player.currentTime = sound.seek() || 0
+    timeRaf = requestAnimationFrame(tick)
   }
-})
+  timeRaf = requestAnimationFrame(tick)
+}
+
+function destroySound() {
+  stopTimeLoop()
+  if (sound) {
+    sound.unload()
+    sound = null
+  }
+}
 
 export function play(music, queue) {
   if (queue) {
@@ -40,19 +50,50 @@ export function play(music, queue) {
   }
 
   player.current = music
-  audio.src = music.url
-  audio.volume = player.volume
-  audio.play().catch(err => {
-    if (err.name !== 'AbortError') throw err
+  destroySound()
+
+  sound = new Howl({
+    src: [music.url],
+    html5: true,
+    volume: player.volume,
+    onplay: () => {
+      player.playing = true
+      player.duration = sound.duration()
+      startTimeLoop()
+    },
+    onpause: () => {
+      player.playing = false
+      stopTimeLoop()
+    },
+    onend: () => {
+      player.playing = false
+      stopTimeLoop()
+      if (player.playMode === 'single') {
+        sound.seek(0)
+        sound.play()
+      } else {
+        next()
+      }
+    },
+    onloaderror: () => {
+      player.playing = false
+      stopTimeLoop()
+    },
   })
+
+  sound.play()
 }
 
 export function toggle() {
   if (!player.current) return
+  if (!sound) {
+    play(player.current, player.queue.length ? player.queue : [player.current])
+    return
+  }
   if (player.playing) {
-    audio.pause()
+    sound.pause()
   } else {
-    audio.play()
+    sound.play()
   }
 }
 
@@ -74,12 +115,14 @@ export function prev() {
 }
 
 export function seek(t) {
-  if (isFinite(t)) audio.currentTime = t
+  if (!sound || !isFinite(t)) return
+  sound.seek(t)
+  player.currentTime = t
 }
 
 export function setVolume(v) {
   player.volume = v
-  audio.volume = v
+  if (sound) sound.volume(v)
 }
 
 export function togglePlayMode() {

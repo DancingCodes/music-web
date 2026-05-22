@@ -1,18 +1,18 @@
-<script setup>
-import { toasts } from '../stores/toast.js'
-</script>
-
 <template>
-  <div class="fixed top-16 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-2">
+  <div class="fixed top-16 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-2 pointer-events-none">
     <div
       v-for="t in toasts"
       :key="t.id"
-      class="px-4 py-2 rounded-lg text-sm shadow-lg transition-all"
+      class="px-4 py-2 rounded-lg text-sm"
       :class="{
-        'bg-emerald-500 text-white': t.type === 'success',
+        'bg-red-500 text-white': t.type === 'success',
         'bg-red-500 text-white': t.type === 'error',
-        'bg-zinc-700 text-white': t.type === 'info',
+        'bg-neutral-800 text-white': t.type === 'info',
       }"
     >{{ t.msg }}</div>
   </div>
 </template>
+
+<script setup>
+import { toasts } from '../stores/toast.js'
+</script>

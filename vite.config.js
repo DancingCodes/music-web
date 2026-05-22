@@ -1,12 +1,12 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import tailwindcss from '@tailwindcss/vite'
+import UnoCSS from 'unocss/vite'
 
 export default defineConfig({
-  plugins: [vue(), tailwindcss()],
+  plugins: [vue(), UnoCSS()],
   server: {
     proxy: {
-      '/api': 'http://localhost:8081',
+      '/api': 'http://localhost:8080',
     },
   },
 })

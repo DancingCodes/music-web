@@ -1,11 +1,14 @@
 <template>
-  <div class="flex flex-col items-center justify-center py-20 text-zinc-400">
-    <IconMusicNote class="w-16 h-16 mb-4" />
-    <p class="text-sm mb-4">还没有收藏歌曲</p>
-    <button @click="$emit('search')" class="text-sm px-4 py-2 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white transition-colors cursor-pointer">去搜索吧</button>
+  <div class="flex flex-col items-center justify-center py-24 text-neutral-600">
+    <Music class="w-12 h-12 mb-5" />
+    <p class="text-sm mb-5">还没有收藏歌曲</p>
+    <div
+      @click="$emit('search')"
+      class="text-sm px-5 h-9 flex items-center rounded-full text-white cursor-pointer bg-gradient-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700"
+    >去搜索吧</div>
   </div>
 </template>
 
 <script setup>
-import { IconMusicNote } from '../utils/icons.js'
+import { Music } from '@lucide/vue'
 </script>

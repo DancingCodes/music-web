@@ -1,7 +1,51 @@
+<template>
+  <div class="h-full flex flex-col">
+    <div class="shrink-0 pb-6 border-b border-neutral-800 mb-4">
+      <div class="flex gap-2.5">
+        <input v-model="keyword" @keyup.enter="onSearch" placeholder="筛选歌曲..."
+          class="flex-1 min-w-0 h-10 px-4 rounded-lg border border-neutral-500 bg-neutral-900/50 text-white text-sm outline-none placeholder:text-neutral-500" />
+        <div @click="onSearch"
+          class="h-10 px-5 rounded-lg flex items-center text-sm text-white cursor-pointer bg-gradient-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700">
+          搜索</div>
+        <div @click="searchModal?.open()"
+          class="h-10 px-4 rounded-lg flex items-center border border-neutral-700 text-sm text-white cursor-pointer hover:border-neutral-600 hover:bg-neutral-900/50">
+          曲库</div>
+      </div>
+      <div v-if="total > 0" class="text-xs text-neutral-500 mt-3 ml-1">{{ total }} 首歌</div>
+    </div>
+
+    <div class="flex-1 overflow-y-auto" style="scrollbar-width:none;-ms-overflow-style:none">
+      <div v-if="loading" class="text-center py-16 text-neutral-500 text-sm">加载中...</div>
+
+      <EmptyState v-if="!loading && total === 0" @search="searchModal?.open()" />
+
+      <div class="space-y-px">
+        <SongRow v-for="(m, i) in list" :key="m.id" :music="m" :index="i + 1" @play="play(m, list)"
+          @delete="deleting = m" />
+      </div>
+
+      <div v-if="list.length > 0" class="text-center pt-8 pb-4">
+        <div v-if="list.length < total" @click="loadMore" class="inline-flex items-center gap-1 text-sm cursor-pointer"
+          :class="loading ? 'text-neutral-600 pointer-events-none' : 'text-neutral-400 hover:text-red-500'">
+          <Loader2 v-if="loading" class="w-3.5 h-3.5 animate-spin" />
+          <span>加载更多</span>
+        </div>
+        <div v-else class="text-sm text-neutral-600">没有更多了</div>
+      </div>
+    </div>
+
+    <ConfirmModal :show="!!deleting" :message="deleting ? '确定删除 ' + deleting.name + '？同时会删除云端文件' : ''"
+      @confirm="confirmDelete" @cancel="deleting = null" />
+
+    <SearchModal ref="searchModal" />
+  </div>
+</template>
+
 <script setup>
 import { ref, onMounted } from 'vue'
+import { Loader2 } from '@lucide/vue'
 import { getMusicList, deleteMusic } from '../api/index.js'
-import { play } from '../stores/player.js'
+import { play, player } from '../stores/player.js'
 import { showToast } from '../stores/toast.js'
 
 import SongRow from '../components/SongRow.vue'
@@ -13,15 +57,25 @@ const list = ref([])
 const total = ref(0)
 const keyword = ref('')
 const pageNo = ref(1)
+const pageSize = 10
 const deleting = ref(null)
 const loading = ref(true)
 const searchModal = ref(null)
 
-async function load() {
+async function load(page = 1, append = false) {
   loading.value = true
   try {
-    const res = await getMusicList(pageNo.value, 10, keyword.value)
-    list.value = res.data.data.list || []
+    const res = await getMusicList(page, pageSize, keyword.value)
+    const songs = res.data.data.list || []
+    if (append) {
+      list.value.push(...songs)
+    } else {
+      list.value = songs
+      if (songs.length && !player.current) {
+        player.current = songs[0]
+        player.queue = songs
+      }
+    }
     total.value = res.data.data.total || 0
   } catch {
   } finally {
@@ -33,7 +87,12 @@ function onSearch() {
   pageNo.value = 1
   list.value = []
   total.value = 0
-  load()
+  load(1)
+}
+
+function loadMore() {
+  load(pageNo.value + 1, true)
+  pageNo.value++
 }
 
 async function confirmDelete() {
@@ -49,38 +108,3 @@ async function confirmDelete() {
 
 onMounted(load)
 </script>
-
-<template>
-  <div class="py-6">
-    <div class="mb-6">
-      <div class="flex gap-2">
-        <input v-model="keyword" @keyup.enter="onSearch" placeholder="筛选歌曲..." class="flex-1 px-4 py-2 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-transparent text-sm outline-none focus:border-emerald-500 transition-colors" />
-        <button @click="onSearch" class="px-6 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-medium cursor-pointer transition-colors">搜索</button>
-        <button @click="searchModal?.open()" class="px-4 py-2 rounded-lg border border-zinc-200 dark:border-zinc-700 text-sm cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors">曲库</button>
-      </div>
-      <div v-if="total > 0" class="text-sm text-zinc-500 dark:text-zinc-400 mt-2">共 {{ total }} 首</div>
-    </div>
-
-    <div v-if="loading" class="text-center py-10 text-zinc-400 text-sm">加载中...</div>
-
-    <EmptyState v-if="!loading && total === 0" @search="searchModal?.open()" />
-
-    <SongRow
-      v-for="m in list" :key="m.id"
-      :music="m"
-      @play="play(m, list)"
-      @delete="deleting = m"
-    >
-      <template #actions />
-    </SongRow>
-
-    <ConfirmModal
-      :show="!!deleting"
-      :message="deleting ? '确定删除 ' + deleting.name + '？同时会删除云端文件' : ''"
-      @confirm="confirmDelete"
-      @cancel="deleting = null"
-    />
-
-    <SearchModal ref="searchModal" />
-  </div>
-</template>
