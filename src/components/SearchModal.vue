@@ -9,7 +9,7 @@
             v-model="keyword"
             @keyup.enter="onSearch"
             placeholder="搜索网易云歌曲..."
-            class="flex-1 bg-transparent text-white text-sm outline-none placeholder:text-neutral-500"
+            class="flex-1 h-10 px-4 box-border bg-transparent border border-solid border-white rounded-lg text-white text-sm outline-none placeholder:text-neutral-500"
           />
           <div @click="close" class="text-neutral-500 hover:text-neutral-300 cursor-pointer">
             <X class="w-4 h-4" />

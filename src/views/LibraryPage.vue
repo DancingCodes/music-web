@@ -2,8 +2,9 @@
   <div class="h-full flex flex-col">
     <div class="shrink-0 pb-6 border-b border-neutral-800 mb-4">
       <div class="flex gap-2.5">
+
         <input v-model="keyword" @keyup.enter="onSearch" placeholder="筛选歌曲..."
-          class="flex-1 min-w-0 h-10 px-4 rounded-lg border border-neutral-500 bg-neutral-900/50 text-white text-sm outline-none placeholder:text-neutral-500" />
+          class="flex-1 h-10 px-4 rounded-lg box-border bg-transparent border border-solid border-white text-white text-sm outline-none" />
         <div @click="onSearch"
           class="h-10 px-5 rounded-lg flex items-center text-sm text-white cursor-pointer bg-gradient-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700">
           搜索</div>
