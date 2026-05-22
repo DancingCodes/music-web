@@ -12,7 +12,7 @@
     </div>
     <div v-if="total" class="text-xs text-gray-500 mt-3 ml-1">{{ total }} 首歌</div>
     <div class="flex-1 overflow-y-auto [&::-webkit-scrollbar]:hidden" style="scrollbar-width:none;-ms-overflow-style:none">
-      <div v-if="loading" class="text-center py-16 text-gray-500 text-sm">加载中...</div>
+      <SkeletonRow v-if="loading" v-for="n in 6" :key="n" />
       <EmptyState v-if="!loading && total === 0" @search="searchModal?.open()" />
       <SongRow v-for="(m, i) in list" :key="m.id" :music="m" :index="i + 1" @play="play(m, list)"
         @delete="deleting = m" />
@@ -40,6 +40,7 @@ import { play, player } from '../stores/player.js'
 import { showToast } from '../stores/toast.js'
 
 import SongRow from '../components/SongRow.vue'
+import SkeletonRow from '../components/SkeletonRow.vue'
 import EmptyState from '../components/EmptyState.vue'
 import ConfirmModal from '../components/ConfirmModal.vue'
 import SearchModal from '../components/SearchModal.vue'

@@ -13,6 +13,16 @@
       <div v-if="results.length" class="text-xs text-gray-500 mt-2 ml-1">{{ total }} 首结果</div>
 
       <div class="flex-1 overflow-y-auto px-1 [&::-webkit-scrollbar]:hidden" style="scrollbar-width:none;-ms-overflow-style:none">
+        <template v-if="loading && !results.length">
+          <div v-for="n in 5" :key="n" class="flex items-center gap-3 py-2.5 border-b border-gray-100">
+            <div class="flex-1 min-w-0 space-y-2">
+              <div class="h-3.5 rounded bg-gray-200 animate-pulse w-56" />
+              <div class="h-3 rounded bg-gray-100 animate-pulse w-36" />
+            </div>
+            <div class="w-12 h-6 rounded-full bg-gray-200 animate-pulse shrink-0" />
+          </div>
+        </template>
+
         <div v-if="keyword && !loading && !results.length" class="text-center py-16 text-gray-500 text-sm">
           没有找到相关歌曲</div>
 
@@ -21,7 +31,7 @@
           <p class="text-sm">输入歌名或歌手名，搜索网易云曲库</p>
         </div>
 
-        <div v-for="m in results" :key="m.id" class="flex items-center gap-3 py-2 border-b border-gray-200 hover:bg-gray-50 transition-colors duration-200">
+        <div v-for="m in results" :key="m.id" class="flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer border-b border-gray-100 hover:bg-gray-100 transition-colors duration-200">
           <div class="flex-1 min-w-0">
             <div class="text-sm truncate">{{ m.name }}</div>
             <div class="text-xs text-gray-500 truncate mt-0.5">{{ artistNames(m) }} · {{ formatTime(m.duration) }}
