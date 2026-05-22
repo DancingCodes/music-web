@@ -1,6 +1,7 @@
 <script setup>
 import { ref, watch, computed } from 'vue'
 import { player, seek } from '../stores/player.js'
+import { XMarkIcon, PlayIcon, PauseIcon, BackwardIcon, ForwardIcon } from '@heroicons/vue/24/solid'
 
 const show = ref(false)
 const lyricEl = ref(null)
@@ -59,37 +60,59 @@ watch(show, (v) => {
 
 <template>
   <Teleport to="body">
-    <div v-if="show" class="fixed inset-0 z-50 flex items-center justify-center" @click.self="close">
+    <div v-if="show" class="fixed inset-0 z-50 flex flex-col" @click.self="close">
       <div
-        class="absolute inset-0 bg-cover bg-center blur-xl opacity-60"
+        class="absolute inset-0 bg-cover bg-center blur-2xl scale-110"
         :style="{ backgroundImage: `url(${player.current?.pic_url})` }"
       />
-      <div class="absolute inset-0 bg-black/70" />
-      <div class="relative z-10 w-full max-w-lg mx-auto px-6 flex flex-col items-center h-full max-h-full overflow-hidden py-10">
-        <button @click="close" class="self-end text-white/50 hover:text-white cursor-pointer mb-4">
-          <svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
-        <img v-if="player.current?.pic_url" :src="player.current.pic_url" class="w-48 h-48 rounded-xl shadow-2xl object-cover mb-6" />
-        <h2 class="text-white text-lg font-bold mb-1">{{ player.current?.name }}</h2>
-        <p class="text-white/60 text-sm mb-8">{{ player.current?.artists }}</p>
-        <div ref="lyricEl" class="flex-1 w-full overflow-y-auto text-center space-y-4 scrollbar-hide mb-6">
-          <p v-if="lyrics.length === 0" class="text-white/30 text-sm mt-10">暂无歌词</p>
+      <div class="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-black/90" />
+
+      <button @click="close" class="absolute top-6 right-6 z-20 text-white/40 hover:text-white cursor-pointer">
+        <XMarkIcon class="w-7 h-7" />
+      </button>
+
+      <div class="relative z-10 flex-1 flex flex-col items-center justify-center px-8 pt-12 pb-8 overflow-hidden">
+        <div class="relative mb-10">
+          <div class="w-64 h-64 rounded-full border-4 border-white/10 p-1.5">
+            <img
+              v-if="player.current?.pic_url"
+              :src="player.current.pic_url"
+              class="w-full h-full rounded-full object-cover shadow-2xl"
+              :class="{ 'animate-spin': player.playing }"
+              style="animation-duration: 20s"
+            />
+          </div>
+        </div>
+
+        <h2 class="text-white text-2xl font-bold mb-2 text-center truncate max-w-full">{{ player.current?.name }}</h2>
+        <p class="text-white/50 text-sm mb-10">{{ player.current?.artists }}</p>
+
+        <div ref="lyricEl" class="flex-1 w-full max-w-md mx-auto overflow-y-auto scrollbar-hide text-center space-y-5 mb-8" style="scrollbar-width:none;-ms-overflow-style:none">
+          <p v-if="lyrics.length === 0" class="text-white/20 text-sm mt-10">暂无歌词</p>
           <p
             v-for="(l, i) in lyrics"
             :key="i"
-            class="text-sm cursor-pointer transition-all"
-            :class="i === currentIdx ? 'text-emerald-400 text-lg font-bold' : 'text-white/40'"
+            class="cursor-pointer transition-all duration-300"
+            :class="i === currentIdx ? 'text-white text-2xl font-bold' : 'text-white/30 text-base'"
             @click="seek(l.time / 1000)"
           >{{ l.text }}</p>
         </div>
+
         <div class="w-full max-w-md">
-          <div class="relative h-1 bg-white/20 rounded-full mb-4 cursor-pointer" @click="seek(($event.offsetX / $event.target.offsetWidth) * player.duration)">
-            <div class="absolute left-0 top-0 h-full bg-emerald-500 rounded-full" :style="{ width: (player.currentTime / player.duration * 100 || 0) + '%' }" />
+          <div class="flex items-center gap-3 mb-4">
+            <span class="text-xs text-white/30 w-10 text-right">{{ Math.floor(player.currentTime / 60) }}:{{ String(Math.floor(player.currentTime % 60)).padStart(2, '0') }}</span>
+            <div class="relative flex-1 h-1 bg-white/10 rounded-full cursor-pointer" @click="seek(($event.offsetX / $event.target.offsetWidth) * player.duration)">
+              <div class="absolute left-0 top-0 h-full bg-white/60 rounded-full" :style="{ width: (player.currentTime / player.duration * 100 || 0) + '%' }" />
+            </div>
+            <span class="text-xs text-white/30 w-10">{{ Math.floor(player.duration / 60) }}:{{ String(Math.floor(player.duration % 60)).padStart(2, '0') }}</span>
           </div>
-          <div class="flex items-center justify-center gap-6">
-            <button @click="player.howl?.pause(); close()" class="text-white/60 hover:text-white cursor-pointer">
-              <svg viewBox="0 0 24 24" class="w-8 h-8" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+          <div class="flex items-center justify-center gap-8">
+            <BackwardIcon class="w-6 h-6 text-white/40 hover:text-white cursor-pointer" />
+            <button class="text-white cursor-pointer">
+              <PauseIcon v-if="player.playing" class="w-10 h-10" />
+              <PlayIcon v-else class="w-10 h-10" />
             </button>
+            <ForwardIcon class="w-6 h-6 text-white/40 hover:text-white cursor-pointer" />
           </div>
         </div>
       </div>

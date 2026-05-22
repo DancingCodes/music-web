@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { getMusicList, deleteMusic } from '../api/index.js'
+import { play } from '../stores/player.js'
 import { showToast } from '../stores/toast.js'
 import SongRow from '../components/SongRow.vue'
 import EmptyState from '../components/EmptyState.vue'
@@ -19,8 +20,7 @@ async function load() {
     const res = await getMusicList(pageNo.value, 10, keyword.value)
     list.value = res.data.data.list || []
     total.value = res.data.data.total || 0
-  } catch (e) {
-    showToast('加载失败', 'error')
+  } catch {
   } finally {
     loading.value = false
   }
@@ -28,6 +28,8 @@ async function load() {
 
 function onSearch() {
   pageNo.value = 1
+  list.value = []
+  total.value = 0
   load()
 }
 
@@ -38,8 +40,7 @@ async function confirmDelete() {
     showToast('已删除', 'success')
     deleting.value = null
     load()
-  } catch (e) {
-    showToast('删除失败', 'error')
+  } catch {
   }
 }
 
@@ -48,26 +49,22 @@ onMounted(load)
 
 <template>
   <div class="py-6">
-    <div class="flex gap-2 mb-6">
-      <input v-model="keyword" @input="onSearch" placeholder="筛选歌曲..." class="flex-1 px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-transparent text-sm outline-none focus:border-emerald-500 transition-colors" />
-      <div class="flex items-center text-sm text-slate-500 dark:text-slate-400 px-3">共 {{ total }} 首</div>
+    <div class="mb-6">
+      <div class="flex gap-2">
+        <input v-model="keyword" @keyup.enter="onSearch" placeholder="筛选歌曲..." class="flex-1 px-4 py-2 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-transparent text-sm outline-none focus:border-emerald-500 transition-colors" />
+        <button @click="onSearch" class="px-6 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-medium cursor-pointer transition-colors">搜索</button>
+      </div>
+      <div v-if="total > 0" class="text-sm text-zinc-500 dark:text-zinc-400 mt-2">共 {{ total }} 首</div>
     </div>
 
-    <div v-if="loading" class="space-y-3">
-      <div v-for="i in 3" :key="i" class="flex items-center gap-3 py-3 animate-pulse">
-        <div class="w-10 h-10 rounded bg-slate-200 dark:bg-slate-700" />
-        <div class="flex-1 space-y-2">
-          <div class="h-3 w-24 rounded bg-slate-200 dark:bg-slate-700" />
-          <div class="h-2 w-32 rounded bg-slate-200 dark:bg-slate-700" />
-        </div>
-      </div>
-    </div>
+    <div v-if="loading" class="text-center py-10 text-zinc-400 text-sm">加载中...</div>
 
     <EmptyState v-if="!loading && total === 0" />
 
     <SongRow
       v-for="m in list" :key="m.id"
       :music="m"
+      @play="play(m, list)"
       @delete="deleting = m"
     >
       <template #actions />

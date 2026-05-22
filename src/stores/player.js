@@ -3,17 +3,28 @@ import { reactive } from 'vue'
 export const player = reactive({
   current: null,
   queue: [],
+  queueIndex: -1,
   playing: false,
-  volume: 0.8,
+  volume: 1,
   currentTime: 0,
   duration: 0,
   howl: null,
+  loop: false,
 })
 
-export function play(music) {
+export function toggleLoop() {
+  player.loop = !player.loop
+}
+
+export function play(music, queue) {
   if (player.howl) {
     player.howl.unload()
     player.howl = null
+  }
+
+  if (queue) {
+    player.queue = queue
+    player.queueIndex = queue.findIndex(m => m.id === music.id)
   }
 
   import('howler').then(({ Howl }) => {
@@ -30,7 +41,12 @@ export function play(music) {
         player.playing = false
       },
       onend() {
-        next()
+        if (player.loop) {
+          player.howl?.seek(0)
+          player.howl?.play()
+        } else {
+          next()
+        }
       },
     })
     player.current = music
@@ -48,16 +64,15 @@ export function toggle() {
 }
 
 export function next() {
-  if (player.queue.length) {
-    play(player.queue.shift())
-  } else {
-    player.playing = false
-  }
+  if (player.queue.length === 0) return
+  const i = (player.queueIndex + 1) % player.queue.length
+  play(player.queue[i], player.queue)
 }
 
 export function prev() {
-  // simplified: restart current
-  if (player.howl) player.howl.seek(0)
+  if (player.queue.length === 0) return
+  const i = (player.queueIndex - 1 + player.queue.length) % player.queue.length
+  play(player.queue[i], player.queue)
 }
 
 export function seek(t) {
