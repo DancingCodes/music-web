@@ -1,21 +1,19 @@
 <template>
-  <Transition name="confirm-modal">
-    <div v-if="show" class="confirm-overlay">
-      <div class="confirm-backdrop" @click="loading ? null : $emit('cancel')" />
-      <div class="confirm-panel">
-        <p class="confirm-message">{{ message }}</p>
-        <div class="confirm-actions">
-          <button @click="loading ? null : $emit('cancel')" class="btn-cancel" :class="{ 'btn-disabled': loading }">
-            取消
-          </button>
-          <button @click="loading ? null : $emit('confirm')" class="btn-confirm" :class="{ 'btn-disabled': loading }">
-            <Loader2 v-if="loading" class="btn-spinner" />
-            <span>确定</span>
-          </button>
-        </div>
+  <div v-if="show" class="confirm-overlay">
+    <div class="confirm-backdrop" @click="loading ? null : $emit('cancel')" />
+    <div class="confirm-panel">
+      <p class="confirm-message">{{ message }}</p>
+      <div class="confirm-actions">
+        <button @click="loading ? null : $emit('cancel')" class="btn-cancel" :class="{ 'btn-disabled': loading }">
+          取消
+        </button>
+        <button @click="loading ? null : $emit('confirm')" class="btn-confirm" :class="{ 'btn-disabled': loading }">
+          <Loader2 v-if="loading" class="btn-spinner" />
+          <span>确定</span>
+        </button>
       </div>
     </div>
-  </Transition>
+  </div>
 </template>
 
 <script setup>
@@ -25,8 +23,6 @@ defineEmits(['confirm', 'cancel'])
 </script>
 
 <style lang="scss" scoped>
-@use '../styles/_transitions.scss' as *;
-
 .confirm-overlay {
   position: fixed;
   z-index: 50;
@@ -108,7 +104,9 @@ defineEmits(['confirm', 'cancel'])
   animation: spin 1s linear infinite;
 }
 
-@keyframes spin { to { transform: rotate(360deg); } }
-
-@include transition-fade-scale('confirm-modal', '.confirm-panel');
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 </style>

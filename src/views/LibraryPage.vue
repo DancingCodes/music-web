@@ -8,10 +8,8 @@
       <div @click="onSearch" class="library-search-btn">搜索</div>
       <div @click="searchModal?.open()" class="library-cloud-btn">曲库</div>
       <div @click="toggleTheme" class="library-theme-btn">
-        <Transition name="theme-icon" mode="out-in">
-          <Sun v-if="theme === 'dark'" key="sun" class="library-theme-icon" />
-          <Moon v-else key="moon" class="library-theme-icon" />
-        </Transition>
+        <Sun v-if="theme === 'dark'" class="library-theme-icon" />
+        <Moon v-else class="library-theme-icon" />
       </div>
     </div>
     <div v-if="total" class="library-total">{{ total }} 首歌</div>
@@ -274,16 +272,4 @@ onMounted(load)
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
-.theme-icon-enter-active,
-.theme-icon-leave-active {
-  transition: transform 0.35s ease, opacity 0.25s ease;
-}
-.theme-icon-enter-from {
-  transform: rotate(-90deg) scale(0.5);
-  opacity: 0;
-}
-.theme-icon-leave-to {
-  transform: rotate(90deg) scale(0.5);
-  opacity: 0;
-}
 </style>

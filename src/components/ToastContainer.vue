@@ -1,12 +1,10 @@
 <template>
   <div class="toast-container">
-    <TransitionGroup name="toast">
-      <div v-for="t in toasts" :key="t.id" class="toast-item" :class="{
-        'toast-success': t.type === 'success',
-        'toast-error': t.type === 'error',
-        'toast-info': t.type === 'info',
-      }">{{ t.msg }}</div>
-    </TransitionGroup>
+    <div v-for="t in toasts" :key="t.id" class="toast-item" :class="{
+      'toast-success': t.type === 'success',
+      'toast-error': t.type === 'error',
+      'toast-info': t.type === 'info',
+    }">{{ t.msg }}</div>
   </div>
 </template>
 
@@ -15,8 +13,6 @@ import { toasts } from '../stores/toast.js'
 </script>
 
 <style lang="scss" scoped>
-@use '../styles/_transitions.scss' as *;
-
 .toast-container {
   position: fixed;
   top: 4rem;
@@ -51,5 +47,5 @@ import { toasts } from '../stores/toast.js'
   background: rgba(31, 41, 55, 0.8);
 }
 
-@include transition-fade-slideY('toast');
+
 </style>

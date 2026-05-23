@@ -4,7 +4,7 @@
     <div class="player-inner">
       <div class="player-grid">
         <div class="player-left">
-          <img :src="player.current.pic_url" class="player-cover" :class="{ 'player-cover--spinning': player.playing }" />
+          <img :src="player.current.pic_url" class="player-cover" />
           <div class="player-info">
             <div class="player-song">{{ player.current.name }}</div>
             <div class="player-artist">{{ player.current.artists }}</div>
@@ -27,19 +27,6 @@
         </div>
 
         <div class="player-right">
-          <div class="player-vol">
-            <Volume2 v-if="player.volume >= 0.5" class="player-vol-icon" @click="toggleMute" />
-            <Volume1 v-else-if="player.volume > 0" class="player-vol-icon" @click="toggleMute" />
-            <VolumeX v-else class="player-vol-icon" @click="toggleMute" />
-            <div ref="volTrack" class="player-vol-track" @click="seekVol" @mousedown="startDragVol">
-              <div class="player-vol-bg">
-                <div class="player-vol-fill" :class="{ 'player-vol-fill--dragging': draggingVol }"
-                  :style="{ width: (player.volume * 100) + '%' }" />
-              </div>
-              <div class="player-vol-knob" :class="{ 'player-vol-knob--dragging': draggingVol }"
-                :style="{ left: (player.volume * 100) + '%' }" />
-            </div>
-          </div>
           <span>{{ formatTime(player.currentTime * 1000) }}</span>
           <span class="player-time-sep">/</span>
           <span>{{ formatTime(player.duration * 1000) }}</span>
@@ -47,14 +34,10 @@
       </div>
     </div>
 
-    <div class="player-progress"
-      @click="seek(($event.offsetX / $event.currentTarget.offsetWidth) * player.duration)"
-      @mousemove="onProgressHover"
-      @mouseleave="showTimePreview = false">
-      <div class="player-progress-fill"
-        :style="{ width: (player.currentTime / player.duration * 100 || 0) + '%' }" />
-      <div v-if="showTimePreview" class="player-time-preview"
-        :style="{ left: hoverPercent + '%' }">
+    <div class="player-progress" @click="seek(($event.offsetX / $event.currentTarget.offsetWidth) * player.duration)"
+      @mousemove="onProgressHover" @mouseleave="showTimePreview = false">
+      <div class="player-progress-fill" :style="{ width: (player.currentTime / player.duration * 100 || 0) + '%' }" />
+      <div v-if="showTimePreview" class="player-time-preview" :style="{ left: hoverPercent + '%' }">
         {{ formatTime(previewTime * 1000) }}
       </div>
     </div>
@@ -63,15 +46,12 @@
 
 <script setup>
 import { ref } from 'vue'
-import { player, toggle, next, prev, seek, togglePlayMode, setVolume } from '../stores/player.js'
+import { player, toggle, next, prev, seek, togglePlayMode } from '../stores/player.js'
 import { formatTime } from '../utils/format.js'
-import { Play, Pause, SkipBack, SkipForward, Repeat, Repeat1, Shuffle, ScrollText, Volume2, Volume1, VolumeX } from '@lucide/vue'
+import { Play, Pause, SkipBack, SkipForward, Repeat, Repeat1, Shuffle, ScrollText } from '@lucide/vue'
 
 defineEmits(['showLyrics'])
 
-const volTrack = ref(null)
-const draggingVol = ref(false)
-const lastVolume = ref(player.volume)
 const hoverPercent = ref(0)
 const previewTime = ref(0)
 const showTimePreview = ref(false)
@@ -81,37 +61,6 @@ function onProgressHover(e) {
   hoverPercent.value = ((e.clientX - rect.left) / rect.width) * 100
   previewTime.value = (hoverPercent.value / 100) * player.duration
   showTimePreview.value = true
-}
-
-function seekVol(e) {
-  const rect = volTrack.value.getBoundingClientRect()
-  setVolume(Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width)))
-}
-
-function startDragVol(e) {
-  e.preventDefault()
-  draggingVol.value = true
-  seekVol(e)
-  const onMove = (ev) => {
-    const rect = volTrack.value.getBoundingClientRect()
-    setVolume(Math.max(0, Math.min(1, (ev.clientX - rect.left) / rect.width)))
-  }
-  const onUp = () => {
-    draggingVol.value = false
-    document.removeEventListener('mousemove', onMove)
-    document.removeEventListener('mouseup', onUp)
-  }
-  document.addEventListener('mousemove', onMove)
-  document.addEventListener('mouseup', onUp)
-}
-
-function toggleMute() {
-  if (player.volume > 0) {
-    lastVolume.value = player.volume
-    setVolume(0)
-  } else {
-    setVolume(lastVolume.value || 0.5)
-  }
 }
 </script>
 
@@ -147,17 +96,16 @@ function toggleMute() {
           height: 3rem;
           border-radius: 50%;
           object-fit: cover;
-
-          &--spinning {
-            animation: player-spin 30s linear infinite;
-          }
+          animation: player-spin 30s linear infinite;
         }
 
         .player-info {
           width: 8rem;
           min-width: 0;
 
-          @media (max-width: 640px) { display: none; }
+          @media (max-width: 640px) {
+            display: none;
+          }
 
           .player-song {
             font-size: 0.875rem;
@@ -190,7 +138,9 @@ function toggleMute() {
           cursor: pointer;
           transition: color 0.2s;
 
-          &:hover { color: var(--c-text); }
+          &:hover {
+            color: var(--c-text);
+          }
         }
 
         .player-play-btn {
@@ -205,7 +155,9 @@ function toggleMute() {
           cursor: pointer;
           transition: all 0.2s;
 
-          &:hover { transform: scale(1.05); }
+          &:hover {
+            transform: scale(1.05);
+          }
 
           &--playing {
             box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.3);
@@ -215,7 +167,9 @@ function toggleMute() {
             width: 1.125rem;
             height: 1.125rem;
 
-            &--offset { margin-left: 2px; }
+            &--offset {
+              margin-left: 2px;
+            }
           }
         }
 
@@ -225,7 +179,9 @@ function toggleMute() {
           flex-shrink: 0;
           transition: color 0.2s;
 
-          &:hover { color: var(--c-text); }
+          &:hover {
+            color: var(--c-text);
+          }
 
           .player-mode-icon {
             width: 0.875rem;
@@ -241,7 +197,9 @@ function toggleMute() {
           flex-shrink: 0;
           transition: color 0.2s;
 
-          &:hover { color: var(--c-text); }
+          &:hover {
+            color: var(--c-text);
+          }
         }
       }
 
@@ -253,62 +211,6 @@ function toggleMute() {
         font-size: 0.75rem;
         color: var(--c-text-sub);
         font-variant-numeric: tabular-nums;
-
-        .player-vol {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-
-          .player-vol-icon {
-            width: 1rem;
-            height: 1rem;
-            cursor: pointer;
-            flex-shrink: 0;
-            transition: color 0.2s;
-
-            &:hover { color: var(--c-text); }
-          }
-
-          .player-vol-track {
-            width: 4rem;
-            padding: 0.25rem 0;
-            cursor: pointer;
-            position: relative;
-            display: flex;
-            align-items: center;
-
-            .player-vol-bg {
-              height: 0.25rem;
-              border-radius: 9999px;
-              background: var(--c-border);
-              width: 100%;
-
-              .player-vol-fill {
-                height: 100%;
-                border-radius: 9999px;
-                background: var(--c-red);
-
-                &--dragging {
-                  box-shadow: 0 0 8px rgba(248, 113, 113, 0.5);
-                }
-              }
-            }
-
-            .player-vol-knob {
-              position: absolute;
-              width: 0.625rem;
-              height: 0.625rem;
-              border-radius: 50%;
-              background: var(--c-red);
-              top: 50%;
-              transform: translateY(-50%) translateX(-50%);
-
-              &--dragging {
-                box-shadow: 0 0 8px rgba(248, 113, 113, 0.5);
-              }
-            }
-          }
-        }
 
         .player-time-sep {
           color: var(--c-text-sub);
@@ -346,5 +248,10 @@ function toggleMute() {
   }
 }
 
-@keyframes player-spin { to { transform: rotate(360deg); } }
+
+@keyframes player-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 </style>

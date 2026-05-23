@@ -1,6 +1,5 @@
 <template>
-  <Transition name="search-modal">
-    <div v-if="show" class="search-overlay" @click.self="close">
+  <div v-if="show" class="search-overlay" @click.self="close">
       <div class="search-backdrop" />
       <div class="search-panel">
         <div class="search-close-row">
@@ -56,7 +55,6 @@
         </div>
       </div>
     </div>
-  </Transition>
 </template>
 
 <script setup>
@@ -127,8 +125,6 @@ const artistNames = (m) => {
 </script>
 
 <style lang="scss" scoped>
-@use '../styles/_transitions.scss' as *;
-
 .search-overlay {
   position: fixed;
   z-index: 1;
@@ -402,5 +398,5 @@ const artistNames = (m) => {
   100% { background-position: -200% 0; }
 }
 
-@include transition-fade-scale('search-modal', '.search-panel');
+
 </style>

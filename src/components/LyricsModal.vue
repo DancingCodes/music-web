@@ -1,44 +1,31 @@
 <template>
-  <Transition name="lyrics-modal">
-    <div v-if="visible" class="lyrics-overlay" @click.self="close">
-      <div class="lyrics-backdrop" />
+  <div v-if="visible" class="lyrics-overlay" @click.self="close">
+    <div class="lyrics-backdrop" />
 
-      <div class="lyrics-content">
-        <div class="lyrics-left">
-          <img
-            :src="picUrl || 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22><rect fill=%22%23262626%22 width=%2240%22 height=%2240%22/><text fill=%22%23737373%22 x=%2220%22 y=%2226%22 text-anchor=%22middle%22 font-size=%2214%22>♪</text></svg>'"
-            class="lyrics-cover"
-            :class="{ 'lyrics-cover--spinning': player.playing }"
-            @error="$event.target.src = 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22><rect fill=%22%23262626%22 width=%2240%22 height=%2240%22/><text fill=%22%23737373%22 x=%2220%22 y=%2226%22 text-anchor=%22middle%22 font-size=%2214%22>♪</text></svg>'" />
-          <div class="lyrics-meta">
-            <h2 class="lyrics-song-name">{{ songName }}</h2>
-            <p class="lyrics-artist">{{ artistName }}</p>
-          </div>
-        </div>
-
-        <div class="lyrics-right">
-          <div v-if="lines.length === 0" class="lyrics-empty">暂无歌词</div>
-
-          <div v-else ref="scrollEl" class="lyrics-scroll" :class="$style.scrollContainer">
-            <div
-              v-for="(line, i) in lines"
-              :key="i"
-              :ref="el => { if (el) lineRefs[i] = el }"
-              class="lyrics-line"
-              :class="{
-                'lyrics-line--active': i === activeIndex,
-                'lyrics-line--lrc': isLrc && i !== activeIndex,
-                'lyrics-line--plain': !isLrc && i !== activeIndex,
-              }"
-              @click="seekLine(line)"
-            >{{ line.text }}</div>
-          </div>
+    <div class="lyrics-content">
+      <div class="lyrics-left">
+        <img v-if="picUrl" :src="picUrl" class="lyrics-cover" />
+        <div class="lyrics-meta">
+          <h2 class="lyrics-song-name">{{ songName }}</h2>
+          <p class="lyrics-artist">{{ artistName }}</p>
         </div>
       </div>
 
-      <X class="lyrics-close" @click="close" />
+      <div class="lyrics-right">
+        <div v-if="lines.length === 0" class="lyrics-empty">暂无歌词</div>
+
+        <div v-else ref="scrollEl" class="lyrics-scroll">
+          <div v-for="(line, i) in lines" :key="i" :ref="el => { if (el) lineRefs[i] = el }" class="lyrics-line" :class="{
+            'lyrics-line--active': i === activeIndex,
+            'lyrics-line--lrc': isLrc && i !== activeIndex,
+            'lyrics-line--plain': !isLrc && i !== activeIndex,
+          }" @click="seekLine(line)">{{ line.text }}</div>
+        </div>
+      </div>
     </div>
-  </Transition>
+
+    <X class="lyrics-close" @click="close" />
+  </div>
 </template>
 
 <script setup>
@@ -129,23 +116,7 @@ function close() {
 defineExpose({ open, close })
 </script>
 
-<style module>
-.scrollContainer {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  scroll-behavior: smooth;
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
-  mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
-}
-
-.scrollContainer::-webkit-scrollbar {
-  display: none;
-}
-</style>
-
 <style lang="scss" scoped>
-@use '../styles/_transitions.scss' as *;
-
 .lyrics-overlay {
   position: fixed;
   z-index: 50;
@@ -182,10 +153,7 @@ defineExpose({ open, close })
         border-radius: 50%;
         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         object-fit: cover;
-
-        &--spinning {
-          animation: cover-spin 30s linear infinite;
-        }
+        animation: cover-spin 30s linear infinite;
       }
 
       .lyrics-meta {
@@ -222,8 +190,17 @@ defineExpose({ open, close })
       .lyrics-scroll {
         overflow-y: auto;
         height: 75vh;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        scroll-behavior: smooth;
+        -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
+        mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
 
-        > * + * {
+        &::-webkit-scrollbar {
+          display: none;
+        }
+
+        >*+* {
           margin-top: 0.25rem;
         }
       }
@@ -277,7 +254,9 @@ defineExpose({ open, close })
   }
 }
 
-@keyframes cover-spin { to { transform: rotate(360deg); } }
-
-@include transition-fade-slideX('lyrics-modal', '.lyrics-left', '.lyrics-right');
+@keyframes cover-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 </style>
