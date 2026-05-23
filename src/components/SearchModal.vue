@@ -161,17 +161,17 @@ const artistNames = (m) => {
   &-close-row {
     display: flex;
     justify-content: flex-end;
+  }
 
-    &-btn {
-      width: 1.25rem;
-      height: 1.25rem;
-      color: var(--c-text-sub);
-      cursor: pointer;
-      transition: color 0.2s;
+  &-close-btn {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--c-text-sub);
+    cursor: pointer;
+    transition: color 0.2s;
 
-      &:hover {
-        color: var(--c-text);
-      }
+    &:hover {
+      color: var(--c-text);
     }
   }
 

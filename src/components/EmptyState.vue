@@ -13,16 +13,16 @@
   justify-content: center;
   padding: 6rem 0;
   color: var(--c-text-sub);
+}
 
-  &-title {
-    font-size: 1rem;
-    margin-bottom: 0.5rem;
-    color: var(--c-text-sub);
-  }
+.empty-title {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: var(--c-text-sub);
+}
 
-  &-hint {
-    font-size: 0.875rem;
-    color: var(--c-text-sub);
-  }
+.empty-hint {
+  font-size: 0.875rem;
+  color: var(--c-text-sub);
 }
 </style>

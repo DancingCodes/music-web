@@ -109,13 +109,16 @@ defineEmits(['confirm', 'cancel'])
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .confirm-modal-enter-active,
 .confirm-modal-leave-active {
   transition: opacity 0.3s ease;
 }
+
 .confirm-modal-enter-from,
 .confirm-modal-leave-to {
   opacity: 0;
@@ -125,6 +128,7 @@ defineEmits(['confirm', 'cancel'])
   transform: scale(0.95);
   opacity: 0;
 }
+
 .confirm-modal-leave-to .confirm-panel {
   transform: scale(0.95);
   opacity: 0;

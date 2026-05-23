@@ -59,82 +59,82 @@ const isPlaying = computed(() => player.current?.id === props.music.id && player
       background: var(--c-active);
     }
   }
+}
 
-  &-eq {
-    width: 1.5rem;
-    display: flex;
-    align-items: flex-end;
-    justify-content: flex-end;
-    gap: 2px;
-    flex-shrink: 0;
+.song-eq {
+  width: 1.5rem;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: 2px;
+  flex-shrink: 0;
+}
 
-    &-bar {
-      width: 2px;
-      background: var(--c-red-400);
-      border-radius: 9999px;
-      animation: equalizer 0.6s ease-in-out infinite;
-    }
+.song-eq-bar {
+  width: 2px;
+  background: var(--c-red-400);
+  border-radius: 9999px;
+  animation: equalizer 0.6s ease-in-out infinite;
+}
+
+.song-index {
+  width: 1.5rem;
+  font-size: 0.75rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  color: var(--c-text-sub);
+}
+
+.song-cover {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.75rem;
+  object-fit: cover;
+  flex-shrink: 0;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.song-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.song-name {
+  font-size: 0.875rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &.text-red {
+    color: var(--c-red);
   }
+}
 
-  &-index {
-    width: 1.5rem;
-    font-size: 0.75rem;
-    text-align: right;
-    font-variant-numeric: tabular-nums;
-    flex-shrink: 0;
-    color: var(--c-text-sub);
+.song-artists {
+  font-size: 0.75rem;
+  color: var(--c-text-sub);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 2px;
+}
+
+.song-delete {
+  cursor: pointer;
+  color: var(--c-text-sub);
+  opacity: 0;
+  flex-shrink: 0;
+  transition: color 0.2s, opacity 0.2s;
+
+  &:hover {
+    color: var(--c-red);
   }
+}
 
-  &-cover {
-    width: 3rem;
-    height: 3rem;
-    border-radius: 0.75rem;
-    object-fit: cover;
-    flex-shrink: 0;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  }
-
-  &-info {
-    flex: 1;
-    min-width: 0;
-  }
-
-  &-name {
-    font-size: 0.875rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-
-    &.text-red {
-      color: var(--c-red);
-    }
-  }
-
-  &-artists {
-    font-size: 0.75rem;
-    color: var(--c-text-sub);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    margin-top: 2px;
-  }
-
-  &-delete {
-    cursor: pointer;
-    color: var(--c-text-sub);
-    opacity: 0;
-    flex-shrink: 0;
-    transition: color 0.2s, opacity 0.2s;
-
-    &:hover {
-      color: var(--c-red);
-    }
-  }
-
-  &-icon {
-    width: 1rem;
-    height: 1rem;
-  }
+.song-icon {
+  width: 1rem;
+  height: 1rem;
 }
 
 @keyframes equalizer {

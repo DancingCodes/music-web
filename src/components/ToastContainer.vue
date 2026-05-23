@@ -26,27 +26,27 @@ import { toasts } from '../stores/toast.js'
   align-items: center;
   gap: 0.5rem;
   pointer-events: none;
+}
 
-  &-item {
-    padding: 0.5rem 1rem;
-    border-radius: 0.75rem;
-    font-size: 0.875rem;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-    color: #fff;
-  }
+.toast-item {
+  padding: 0.5rem 1rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  color: #fff;
+}
 
-  &-success {
-    background: rgba(34, 197, 94, 0.8);
-  }
+.toast-success {
+  background: rgba(34, 197, 94, 0.8);
+}
 
-  &-error {
-    background: rgba(239, 68, 68, 0.8);
-  }
+.toast-error {
+  background: rgba(239, 68, 68, 0.8);
+}
 
-  &-info {
-    background: rgba(31, 41, 55, 0.8);
-  }
+.toast-info {
+  background: rgba(31, 41, 55, 0.8);
 }
 
 .toast-enter-active,
