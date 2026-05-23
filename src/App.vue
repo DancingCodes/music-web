@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed inset-0 flex flex-col bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 box-border transition-colors duration-300">
+  <div class="app-shell">
     <LibraryPage />
     <PlayerBar @showLyrics="lyricsModal?.open()" />
   </div>
@@ -16,3 +16,34 @@ import LyricsModal from './components/LyricsModal.vue'
 
 const lyricsModal = ref(null)
 </script>
+
+<style>
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+</style>
+
+<style lang="scss" scoped>
+.app-shell {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--c-bg);
+  color: var(--c-text);
+  box-sizing: border-box;
+  transition: background 0.3s, color 0.3s;
+  background-image: var(--c-dot);
+  background-size: 28px 28px;
+}
+</style>

@@ -1,53 +1,42 @@
 <template>
   <Transition name="lyrics-modal">
-    <div v-if="visible" class="fixed z-50 inset-0 flex" @click.self="close">
-      <div class="absolute inset-0 bg-black/60 backdrop-blur-md" />
+    <div v-if="visible" class="lyrics-overlay" @click.self="close">
+      <div class="lyrics-backdrop" />
 
-      <div class="relative z-10 w-full h-full flex items-center">
-        <div class="w-[40%] flex flex-col items-center justify-center gap-6 px-8 lyrics-left">
+      <div class="lyrics-content">
+        <div class="lyrics-left">
           <img
             :src="picUrl || 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22><rect fill=%22%23262626%22 width=%2240%22 height=%2240%22/><text fill=%22%23737373%22 x=%2220%22 y=%2226%22 text-anchor=%22middle%22 font-size=%2214%22>♪</text></svg>'"
-            class="w-72 h-72 rounded-2xl shadow-2xl object-cover"
+            class="lyrics-cover"
+            :class="{ 'lyrics-cover--spinning': player.playing }"
             @error="$event.target.src = 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22><rect fill=%22%23262626%22 width=%2240%22 height=%2240%22/><text fill=%22%23737373%22 x=%2220%22 y=%2226%22 text-anchor=%22middle%22 font-size=%2214%22>♪</text></svg>'" />
-          <div class="text-center">
-            <h2 class="text-2xl font-bold text-white mb-2">{{ songName }}</h2>
-            <p class="text-lg text-gray-300">{{ artistName }}</p>
+          <div class="lyrics-meta">
+            <h2 class="lyrics-song-name">{{ songName }}</h2>
+            <p class="lyrics-artist">{{ artistName }}</p>
           </div>
         </div>
 
-        <div class="w-[60%] flex flex-col justify-center pr-12 lyrics-right">
-          <div
-            v-if="lines.length === 0"
-            class="text-center text-gray-400 dark:text-gray-500 text-lg"
-          >暂无歌词</div>
+        <div class="lyrics-right">
+          <div v-if="lines.length === 0" class="lyrics-empty">暂无歌词</div>
 
-          <div
-            v-else
-            ref="scrollContainer"
-            class="overflow-y-auto h-[75vh] space-y-1"
-            style="scrollbar-width:none;-ms-overflow-style:none"
-            :class="$style.scrollContainer"
-          >
+          <div v-else ref="scrollEl" class="lyrics-scroll" :class="$style.scrollContainer">
             <div
               v-for="(line, i) in lines"
               :key="i"
               :ref="el => { if (el) lineRefs[i] = el }"
-              class="py-2 px-4 rounded-xl cursor-pointer transition-all duration-500"
-              :class="i === activeIndex
-                ? 'text-red-400 text-2xl font-bold'
-                : isLrc
-                  ? 'text-gray-400 dark:text-gray-500 text-lg hover:text-gray-200'
-                  : 'text-gray-300 text-lg'"
+              class="lyrics-line"
+              :class="{
+                'lyrics-line--active': i === activeIndex,
+                'lyrics-line--lrc': isLrc && i !== activeIndex,
+                'lyrics-line--plain': !isLrc && i !== activeIndex,
+              }"
               @click="seekLine(line)"
             >{{ line.text }}</div>
           </div>
         </div>
       </div>
 
-      <X
-        class="absolute top-6 right-6 z-20 w-6 h-6 text-gray-400 hover:text-white cursor-pointer transition-colors duration-200"
-        @click="close"
-      />
+      <X class="lyrics-close" @click="close" />
     </div>
   </Transition>
 </template>
@@ -60,7 +49,6 @@ import { parseLyrics } from '../utils/lyrics.js'
 
 const visible = ref(false)
 const lineRefs = ref({})
-const scrollContainer = ref(null)
 
 const songName = computed(() => player.current?.name || '')
 const artistName = computed(() => player.current?.artists || '')
@@ -142,20 +130,159 @@ defineExpose({ open, close })
 </script>
 
 <style module>
+.scrollContainer {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-behavior: smooth;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
+}
+
 .scrollContainer::-webkit-scrollbar {
   display: none;
 }
 </style>
 
-<style scoped>
+<style lang="scss" scoped>
+.lyrics {
+  &-overlay {
+    position: fixed;
+    z-index: 50;
+    inset: 0;
+    display: flex;
+  }
+
+  &-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+  }
+
+  &-content {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  &-left {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    padding: 0 2rem;
+  }
+
+  &-cover {
+    width: 18rem;
+    height: 18rem;
+    border-radius: 50%;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    object-fit: cover;
+
+    &--spinning {
+      animation: cover-spin 30s linear infinite;
+    }
+  }
+
+  &-meta {
+    text-align: center;
+  }
+
+  &-song-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.5rem;
+  }
+
+  &-artist {
+    font-size: 1.125rem;
+    color: var(--c-text-sub);
+  }
+
+  &-right {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-right: 3rem;
+  }
+
+  &-empty {
+    text-align: center;
+    color: var(--c-text-sub);
+    font-size: 1.125rem;
+  }
+
+  &-scroll {
+    overflow-y: auto;
+    height: 75vh;
+
+    > * + * {
+      margin-top: 0.25rem;
+    }
+  }
+
+  &-line {
+    padding: 0.5rem 1rem;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: all 0.5s ease;
+
+    &--active {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(to right, var(--c-red-400), var(--c-rose-300));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    &--lrc {
+      color: var(--c-text-sub);
+      font-size: 1.125rem;
+
+      &:hover {
+        color: var(--c-text-sub);
+      }
+    }
+
+    &--plain {
+      color: var(--c-text-sub);
+      font-size: 1.125rem;
+    }
+  }
+
+  &-close {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    z-index: 20;
+    width: 1.5rem;
+    height: 1.5rem;
+    color: var(--c-text-sub);
+    cursor: pointer;
+    transition: color 0.2s;
+
+    &:hover {
+      color: #fff;
+    }
+  }
+}
+
+@keyframes cover-spin {
+  to { transform: rotate(360deg); }
+}
+
 .lyrics-modal-enter-active,
-.lyrics-modal-leave-active {
-  transition: opacity 0.3s ease;
-}
+.lyrics-modal-leave-active { transition: opacity 0.3s ease; }
 .lyrics-modal-enter-from,
-.lyrics-modal-leave-to {
-  opacity: 0;
-}
+.lyrics-modal-leave-to { opacity: 0; }
 
 .lyrics-left {
   transition: transform 0.4s ease, opacity 0.4s ease;

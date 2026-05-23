@@ -1,0 +1,31 @@
+:root {
+  /* 主题色（随亮/暗切换） */
+  --c-bg: #ffffff;           /* 页面主背景 */
+  --c-surface: #ffffff;      /* 弹窗、浮层背景 */
+  --c-hover: #f3f4f6;        /* hover 高亮 */
+  --c-text: #111827;         /* 主文字 */
+  --c-text-sub: #6b7280;     /* 辅助文字、图标、placeholder */
+  --c-border: #e5e7eb;       /* 分割线、边框 */
+  --c-active: rgba(254, 226, 226, 0.8);   /* 正在播放行背景 */
+  --c-skeleton: rgba(229, 231, 235, 0.6); /* 骨架屏动画色 */
+  --c-dot: none;             /* 暗色网点背景（亮色无） */
+
+  /* 品牌色（不切换） */
+  --c-red: #ef4444;          /* 主强调色 */
+  --c-red-400: #f87171;      /* 浅红：均衡器、歌词渐变起点 */
+  --c-rose-300: #fda4af;     /* 歌词渐变终点 */
+  --c-rose-400: #fb7185;     /* 渐变按钮、进度条终点 */
+  --c-green: #22c55e;        /* 成功图标 */
+}
+
+.dark {
+  --c-bg: #111827;
+  --c-surface: #1f2937;
+  --c-hover: #374151;
+  --c-text: #f3f4f6;
+  --c-text-sub: #9ca3af;
+  --c-border: #374151;
+  --c-active: rgba(239, 68, 68, 0.15);
+  --c-skeleton: rgba(75, 85, 99, 0.6);
+  --c-dot: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.025) 1px, transparent 0);
+}

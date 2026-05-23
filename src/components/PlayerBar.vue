@@ -1,55 +1,62 @@
 <template>
-  <div v-if="player.current" class="bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg shadow-[0_-1px_4px_rgba(0,0,0,0.06)]">
-    <div class="px-6 py-2.5">
-      <div class="grid grid-cols-3 items-center">
-        <div class="flex items-center gap-4">
-          <img :src="player.current.pic_url" class="w-12 h-12 rounded-lg object-cover shrink-0" />
-          <div class="w-32 min-w-0 max-sm:hidden">
-            <div class="text-sm truncate">{{ player.current.name }}</div>
-            <div class="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">{{ player.current.artists }}</div>
+  <div v-if="player.current" class="player-bar">
+    <div class="player-glow" />
+    <div class="player-inner">
+      <div class="player-grid">
+        <div class="player-left">
+          <img :src="player.current.pic_url" class="player-cover" :class="{ 'player-cover--spinning': player.playing }" />
+          <div class="player-info">
+            <div class="player-song">{{ player.current.name }}</div>
+            <div class="player-artist">{{ player.current.artists }}</div>
           </div>
         </div>
 
-        <div class="flex items-center justify-center gap-6">
-          <SkipBack class="w-4 h-4 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 cursor-pointer transition-colors duration-200" @click="prev" />
-          <div @click="toggle"
-            class="w-10 h-10 rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 flex items-center justify-center cursor-pointer hover:scale-105 transition-transform duration-200">
-            <Pause v-if="player.playing" class="w-4.5 h-4.5" />
-            <Play v-else class="w-4.5 h-4.5 ml-0.5" />
+        <div class="player-center">
+          <SkipBack class="player-skip-btn" @click="prev" />
+          <div @click="toggle" class="player-play-btn" :class="{ 'player-play-btn--playing': player.playing }">
+            <Pause v-if="player.playing" class="player-play-icon" />
+            <Play v-else class="player-play-icon player-play-icon--offset" />
           </div>
-          <SkipForward class="w-4 h-4 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 cursor-pointer transition-colors duration-200" @click="next" />
-          <div @click="togglePlayMode" class="cursor-pointer text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 shrink-0 transition-colors duration-200">
-            <Repeat v-if="player.playMode === 'sequential'" class="w-3.5 h-3.5" />
-            <Repeat1 v-else-if="player.playMode === 'single'" class="w-3.5 h-3.5" />
-            <Shuffle v-else class="w-3.5 h-3.5" />
+          <SkipForward class="player-skip-btn" @click="next" />
+          <div @click="togglePlayMode" class="player-mode-btn">
+            <Repeat v-if="player.playMode === 'sequential'" class="player-mode-icon" />
+            <Repeat1 v-else-if="player.playMode === 'single'" class="player-mode-icon" />
+            <Shuffle v-else class="player-mode-icon" />
           </div>
-          <ScrollText class="w-4 h-4 cursor-pointer text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors duration-200 shrink-0" @click.stop="$emit('showLyrics')" />
+          <ScrollText class="player-lyrics-btn" @click.stop="$emit('showLyrics')" />
         </div>
 
-        <div class="flex items-center justify-end gap-3 text-xs text-gray-500 dark:text-gray-400 tabular-nums">
-          <div class="flex items-center gap-2">
-            <Volume2 v-if="player.volume >= 0.5" class="w-4 h-4 cursor-pointer hover:text-gray-900 dark:hover:text-gray-200 transition-colors duration-200 shrink-0" @click="toggleMute" />
-            <Volume1 v-else-if="player.volume > 0" class="w-4 h-4 cursor-pointer hover:text-gray-900 dark:hover:text-gray-200 transition-colors duration-200 shrink-0" @click="toggleMute" />
-            <VolumeX v-else class="w-4 h-4 cursor-pointer hover:text-gray-900 dark:hover:text-gray-200 transition-colors duration-200 shrink-0" @click="toggleMute" />
-            <div ref="volTrack" class="w-16 py-1 cursor-pointer relative flex items-center" @click="seekVol" @mousedown="startDragVol">
-              <div class="h-1 rounded-full bg-gray-300 dark:bg-gray-600 w-full">
-                <div class="h-full rounded-full bg-red-500" :style="{ width: (player.volume * 100) + '%' }" />
+        <div class="player-right">
+          <div class="player-vol">
+            <Volume2 v-if="player.volume >= 0.5" class="player-vol-icon" @click="toggleMute" />
+            <Volume1 v-else-if="player.volume > 0" class="player-vol-icon" @click="toggleMute" />
+            <VolumeX v-else class="player-vol-icon" @click="toggleMute" />
+            <div ref="volTrack" class="player-vol-track" @click="seekVol" @mousedown="startDragVol">
+              <div class="player-vol-bg">
+                <div class="player-vol-fill" :class="{ 'player-vol-fill--dragging': draggingVol }"
+                  :style="{ width: (player.volume * 100) + '%' }" />
               </div>
-              <div class="absolute w-2.5 h-2.5 rounded-full bg-red-500 shadow-sm top-1/2 -translate-y-1/2 -translate-x-1/2"
+              <div class="player-vol-knob" :class="{ 'player-vol-knob--dragging': draggingVol }"
                 :style="{ left: (player.volume * 100) + '%' }" />
             </div>
           </div>
           <span>{{ formatTime(player.currentTime * 1000) }}</span>
-          <span class="text-gray-300 dark:text-gray-600">/</span>
+          <span class="player-time-sep">/</span>
           <span>{{ formatTime(player.duration * 1000) }}</span>
         </div>
       </div>
     </div>
 
-    <div class="h-2 cursor-pointer bg-gray-200 dark:bg-gray-700"
-      @click="seek(($event.offsetX / $event.currentTarget.offsetWidth) * player.duration)">
-      <div class="h-full bg-gradient-to-r from-red-500 to-rose-400 rounded-r-full transition-all duration-150"
+    <div class="player-progress"
+      @click="seek(($event.offsetX / $event.currentTarget.offsetWidth) * player.duration)"
+      @mousemove="onProgressHover"
+      @mouseleave="showTimePreview = false">
+      <div class="player-progress-fill"
         :style="{ width: (player.currentTime / player.duration * 100 || 0) + '%' }" />
+      <div v-if="showTimePreview" class="player-time-preview"
+        :style="{ left: hoverPercent + '%' }">
+        {{ formatTime(previewTime * 1000) }}
+      </div>
     </div>
   </div>
 </template>
@@ -63,7 +70,18 @@ import { Play, Pause, SkipBack, SkipForward, Repeat, Repeat1, Shuffle, ScrollTex
 defineEmits(['showLyrics'])
 
 const volTrack = ref(null)
+const draggingVol = ref(false)
 const lastVolume = ref(player.volume)
+const hoverPercent = ref(0)
+const previewTime = ref(0)
+const showTimePreview = ref(false)
+
+function onProgressHover(e) {
+  const rect = e.currentTarget.getBoundingClientRect()
+  hoverPercent.value = ((e.clientX - rect.left) / rect.width) * 100
+  previewTime.value = (hoverPercent.value / 100) * player.duration
+  showTimePreview.value = true
+}
 
 function seekVol(e) {
   const rect = volTrack.value.getBoundingClientRect()
@@ -72,12 +90,14 @@ function seekVol(e) {
 
 function startDragVol(e) {
   e.preventDefault()
+  draggingVol.value = true
   seekVol(e)
   const onMove = (ev) => {
     const rect = volTrack.value.getBoundingClientRect()
     setVolume(Math.max(0, Math.min(1, (ev.clientX - rect.left) / rect.width)))
   }
   const onUp = () => {
+    draggingVol.value = false
     document.removeEventListener('mousemove', onMove)
     document.removeEventListener('mouseup', onUp)
   }
@@ -94,3 +114,255 @@ function toggleMute() {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.player {
+  &-bar {
+    position: relative;
+    background: var(--c-bg);
+    box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.06);
+  }
+
+  &-glow {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse at 50% 100%, rgba(248, 113, 113, 0.06), transparent 60%);
+  }
+
+  &-inner {
+    position: relative;
+    padding: 0.625rem 1.5rem;
+  }
+
+  &-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    align-items: center;
+  }
+
+  &-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  &-cover {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    object-fit: cover;
+
+    &--spinning {
+      animation: player-spin 30s linear infinite;
+    }
+  }
+
+  &-info {
+    width: 8rem;
+    min-width: 0;
+
+    @media (max-width: 640px) {
+      display: none;
+    }
+  }
+
+  &-song {
+    font-size: 0.875rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &-artist {
+    font-size: 0.75rem;
+    color: var(--c-text-sub);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-top: 2px;
+  }
+
+  &-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+
+  &-skip-btn {
+    width: 1rem;
+    height: 1rem;
+    color: var(--c-text-sub);
+    cursor: pointer;
+    transition: color 0.2s;
+
+    &:hover {
+      color: var(--c-text);
+    }
+  }
+
+  &-play-btn {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: var(--c-text);
+    color: var(--c-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+
+    &--playing {
+      box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.3);
+    }
+  }
+
+  &-play-icon {
+    width: 1.125rem;
+    height: 1.125rem;
+
+    &--offset {
+      margin-left: 2px;
+    }
+  }
+
+  &-mode-btn {
+    cursor: pointer;
+    color: var(--c-text-sub);
+    flex-shrink: 0;
+    transition: color 0.2s;
+
+    &:hover {
+      color: var(--c-text);
+    }
+  }
+
+  &-mode-icon {
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+
+  &-lyrics-btn {
+    width: 1rem;
+    height: 1rem;
+    cursor: pointer;
+    color: var(--c-text-sub);
+    flex-shrink: 0;
+    transition: color 0.2s;
+
+    &:hover {
+      color: var(--c-text);
+    }
+  }
+
+  &-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    font-size: 0.75rem;
+    color: var(--c-text-sub);
+    font-variant-numeric: tabular-nums;
+  }
+
+  &-vol {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    &-icon {
+      width: 1rem;
+      height: 1rem;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: color 0.2s;
+
+      &:hover {
+        color: var(--c-text);
+      }
+    }
+
+    &-track {
+      width: 4rem;
+      padding: 0.25rem 0;
+      cursor: pointer;
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    &-bg {
+      height: 0.25rem;
+      border-radius: 9999px;
+      background: var(--c-border);
+      width: 100%;
+    }
+
+    &-fill {
+      height: 100%;
+      border-radius: 9999px;
+      background: var(--c-red);
+
+      &--dragging {
+        box-shadow: 0 0 8px rgba(248, 113, 113, 0.5);
+      }
+    }
+
+    &-knob {
+      position: absolute;
+      width: 0.625rem;
+      height: 0.625rem;
+      border-radius: 50%;
+      background: var(--c-red);
+      top: 50%;
+      transform: translateY(-50%) translateX(-50%);
+
+      &--dragging {
+        box-shadow: 0 0 8px rgba(248, 113, 113, 0.5);
+      }
+    }
+  }
+
+  &-time-sep {
+    color: var(--c-text-sub);
+  }
+
+  &-progress {
+    height: 0.5rem;
+    cursor: pointer;
+    background: var(--c-border);
+    position: relative;
+
+    &-fill {
+      height: 100%;
+      background: linear-gradient(to right, var(--c-red), var(--c-rose-400));
+      border-radius: 0 9999px 9999px 0;
+      transition: width 0.15s;
+      box-shadow: 0 0 14px rgba(248, 113, 113, 0.6);
+    }
+  }
+
+  &-time-preview {
+    position: absolute;
+    top: -2rem;
+    transform: translateX(-50%);
+    padding: 0.125rem 0.5rem;
+    border-radius: 0.375rem;
+    background: rgba(0, 0, 0, 0.85);
+    color: #fff;
+    font-size: 0.75rem;
+    pointer-events: none;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  }
+}
+
+@keyframes player-spin {
+  to { transform: rotate(360deg); }
+}
+</style>

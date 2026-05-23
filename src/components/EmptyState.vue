@@ -1,14 +1,28 @@
 <template>
-  <div class="flex flex-col items-center justify-center py-24 text-gray-400 dark:text-gray-500">
-    <Music class="w-12 h-12 mb-5" />
-    <p class="text-sm mb-5">还没有收藏歌曲</p>
-    <div @click="$emit('search')"
-      class="text-sm px-5 h-9 flex items-center rounded-full text-white cursor-pointer bg-gradient-to-r from-red-500 to-rose-400 hover:shadow-md hover:scale-[1.02] transition-all duration-200">
-      去搜索吧
-    </div>
+  <div class="empty-state">
+    <p class="empty-title">音乐库为空</p>
+    <p class="empty-hint">点击右上角「曲库」搜索歌曲并保存</p>
   </div>
 </template>
 
-<script setup>
-import { Music } from '@lucide/vue'
-</script>
+<style lang="scss" scoped>
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6rem 0;
+  color: var(--c-text-sub);
+
+  &-title {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: var(--c-text-sub);
+  }
+
+  &-hint {
+    font-size: 0.875rem;
+    color: var(--c-text-sub);
+  }
+}
+</style>
