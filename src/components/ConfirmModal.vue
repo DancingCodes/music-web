@@ -25,6 +25,8 @@ defineEmits(['confirm', 'cancel'])
 </script>
 
 <style lang="scss" scoped>
+@use '../styles/_transitions.scss' as *;
+
 .confirm-overlay {
   position: fixed;
   z-index: 50;
@@ -32,34 +34,34 @@ defineEmits(['confirm', 'cancel'])
   display: flex;
   align-items: center;
   justify-content: center;
-}
 
-.confirm-backdrop {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-}
+  .confirm-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+  }
 
-.confirm-panel {
-  position: relative;
-  background: var(--c-surface);
-  border-radius: 0.75rem;
-  padding: 1.5rem 1rem;
-  border: 1px solid var(--c-border);
-  min-width: 280px;
-  color: var(--c-text);
-  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
-}
+  .confirm-panel {
+    position: relative;
+    background: var(--c-surface);
+    border-radius: 0.75rem;
+    padding: 1.5rem 1rem;
+    border: 1px solid var(--c-border);
+    min-width: 280px;
+    color: var(--c-text);
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
 
-.confirm-message {
-  font-size: 0.875rem;
-  margin-bottom: 1rem;
-}
+    .confirm-message {
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+    }
 
-.confirm-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.75rem;
+    .confirm-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+    }
+  }
 }
 
 .btn-cancel {
@@ -106,29 +108,7 @@ defineEmits(['confirm', 'cancel'])
   animation: spin 1s linear infinite;
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
+@keyframes spin { to { transform: rotate(360deg); } }
 
-.confirm-modal-enter-active,
-.confirm-modal-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.confirm-modal-enter-from,
-.confirm-modal-leave-to {
-  opacity: 0;
-}
-
-.confirm-modal-enter-from .confirm-panel {
-  transform: scale(0.95);
-  opacity: 0;
-}
-
-.confirm-modal-leave-to .confirm-panel {
-  transform: scale(0.95);
-  opacity: 0;
-}
+@include transition-fade-scale('confirm-modal', '.confirm-panel');
 </style>

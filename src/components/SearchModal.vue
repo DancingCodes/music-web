@@ -127,6 +127,8 @@ const artistNames = (m) => {
 </script>
 
 <style lang="scss" scoped>
+@use '../styles/_transitions.scss' as *;
+
 .search-overlay {
   position: fixed;
   z-index: 1;
@@ -135,273 +137,263 @@ const artistNames = (m) => {
   align-items: flex-start;
   justify-content: center;
   padding-top: 5rem;
-}
 
-.search-backdrop {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-}
-
-.search-panel {
-  position: relative;
-  background: var(--c-surface);
-  border-radius: 0.75rem;
-  width: 100%;
-  max-width: 42rem;
-  max-height: 70vh;
-  display: flex;
-  flex-direction: column;
-  margin: 0 1rem;
-  border: 1px solid var(--c-border);
-  padding: 1.5rem;
-}
-
-.search-close-row {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.search-close-btn {
-  width: 1.25rem;
-  height: 1.25rem;
-  color: var(--c-text-sub);
-  cursor: pointer;
-  transition: color 0.2s;
-
-  &:hover {
-    color: var(--c-text);
-  }
-}
-
-.search-input-wrap {
-  margin-top: 1rem;
-  position: relative;
-}
-
-.search-input-icon {
-  position: absolute;
-  left: 0.75rem;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 1rem;
-  height: 1rem;
-  color: var(--c-text-sub);
-  pointer-events: none;
-}
-
-.search-input {
-  width: 100%;
-  padding: 0.5rem 0.75rem 0.5rem 2.25rem;
-  line-height: 1;
-  box-sizing: border-box;
-  background: transparent;
-  border: 1px solid var(--c-border);
-  border-radius: 0.75rem;
-  color: var(--c-text);
-  font-size: 0.875rem;
-  outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
-
-  &::placeholder {
-    color: var(--c-text-sub);
+  .search-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
   }
 
-  &:focus {
-    border-color: var(--c-red);
-    box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.2);
+  .search-panel {
+    position: relative;
+    background: var(--c-surface);
+    border-radius: 0.75rem;
+    width: 100%;
+    max-width: 42rem;
+    max-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    margin: 0 1rem;
+    border: 1px solid var(--c-border);
+    padding: 1.5rem;
+
+    .search-close-row {
+      display: flex;
+      justify-content: flex-end;
+
+      .search-close-btn {
+        width: 1.25rem;
+        height: 1.25rem;
+        color: var(--c-text-sub);
+        cursor: pointer;
+        transition: color 0.2s;
+
+        &:hover { color: var(--c-text); }
+      }
+    }
+
+    .search-input-wrap {
+      margin-top: 1rem;
+      position: relative;
+
+      .search-input-icon {
+        position: absolute;
+        left: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 1rem;
+        height: 1rem;
+        color: var(--c-text-sub);
+        pointer-events: none;
+      }
+
+      .search-input {
+        width: 100%;
+        padding: 0.5rem 0.75rem 0.5rem 2.25rem;
+        line-height: 1;
+        box-sizing: border-box;
+        background: transparent;
+        border: 1px solid var(--c-border);
+        border-radius: 0.75rem;
+        color: var(--c-text);
+        font-size: 0.875rem;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+
+        &::placeholder { color: var(--c-text-sub); }
+
+        &:focus {
+          border-color: var(--c-red);
+          box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.2);
+        }
+      }
+    }
+
+    .search-count {
+      font-size: 0.75rem;
+      color: var(--c-text-sub);
+      margin-top: 0.5rem;
+      margin-left: 0.25rem;
+    }
+
+    .search-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 0.25rem;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+
+      &::-webkit-scrollbar { display: none; }
+
+      .search-skel-row {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid var(--c-border);
+
+        .search-skel-cover {
+          width: 2.5rem;
+          height: 2.5rem;
+          border-radius: 0.75rem;
+          flex-shrink: 0;
+        }
+
+        .search-skel-info {
+          flex: 1;
+          min-width: 0;
+
+          .search-skel-title {
+            height: 0.875rem;
+            border-radius: 0.375rem;
+            width: 14rem;
+            margin-bottom: 0.5rem;
+          }
+
+          .search-skel-sub {
+            height: 0.75rem;
+            border-radius: 0.375rem;
+            width: 9rem;
+          }
+        }
+
+        .search-skel-btn {
+          width: 3.5rem;
+          height: 1.75rem;
+          border-radius: 9999px;
+          flex-shrink: 0;
+        }
+      }
+
+      .search-skel-cover,
+      .search-skel-title,
+      .search-skel-sub,
+      .search-skel-btn {
+        background: linear-gradient(90deg, transparent 25%, var(--c-skeleton) 50%, transparent 75%);
+        background-size: 200% 100%;
+        animation: search-shimmer 1.5s ease-in-out infinite;
+      }
+
+      .search-empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 4rem 0;
+        color: var(--c-text-sub);
+
+        .search-empty-text {
+          font-size: 0.875rem;
+        }
+      }
+
+      .search-result {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem;
+        border-radius: 0.75rem;
+        cursor: pointer;
+        border-bottom: 1px solid var(--c-border);
+        transition: background 0.2s;
+
+        &:hover { background: var(--c-hover); }
+
+        .search-result-icon {
+          width: 1.25rem;
+          height: 1.25rem;
+          color: var(--c-text-sub);
+          flex-shrink: 0;
+        }
+
+        .search-result-info {
+          flex: 1;
+          min-width: 0;
+
+          .search-result-name {
+            font-size: 0.875rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+
+          .search-result-artists {
+            font-size: 0.75rem;
+            color: var(--c-text-sub);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin-top: 2px;
+          }
+        }
+
+        .search-save-btn {
+          font-size: 0.75rem;
+          padding: 0.25rem 0.75rem;
+          border-radius: 9999px;
+          border: 1px solid var(--c-border);
+          color: var(--c-text-sub);
+          cursor: pointer;
+          flex-shrink: 0;
+          transition: all 0.2s;
+
+          &:hover {
+            color: #fff;
+            background: var(--c-red);
+            border-color: var(--c-red);
+          }
+
+          &--saving {
+            opacity: 0.5;
+            pointer-events: none;
+          }
+        }
+
+        .search-saved-icon {
+          width: 1rem;
+          height: 1rem;
+          color: var(--c-green);
+          flex-shrink: 0;
+        }
+      }
+
+      .search-bottom {
+        text-align: center;
+        padding: 1rem 0;
+
+        .search-load-more {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.25rem;
+          font-size: 0.875rem;
+          cursor: pointer;
+          color: var(--c-text-sub);
+          transition: color 0.2s;
+
+          &:hover { color: var(--c-red); }
+        }
+
+        .search-spinner {
+          width: 0.875rem;
+          height: 0.875rem;
+          animation: spin 1s linear infinite;
+        }
+
+        .search-divider {
+          display: flex;
+          align-items: center;
+          padding: 0.5rem 0;
+
+          .search-divider-line {
+            flex: 1;
+            height: 1px;
+            background: var(--c-border);
+          }
+        }
+      }
+    }
   }
-}
-
-.search-count {
-  font-size: 0.75rem;
-  color: var(--c-text-sub);
-  margin-top: 0.5rem;
-  margin-left: 0.25rem;
-}
-
-.search-scroll {
-  flex: 1;
-  overflow-y: auto;
-  padding: 0 0.25rem;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
-}
-
-.search-skel-row {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid var(--c-border);
-}
-
-.search-skel-cover {
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 0.75rem;
-  flex-shrink: 0;
-}
-
-.search-skel-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.search-skel-title {
-  height: 0.875rem;
-  border-radius: 0.375rem;
-  width: 14rem;
-  margin-bottom: 0.5rem;
-}
-
-.search-skel-sub {
-  height: 0.75rem;
-  border-radius: 0.375rem;
-  width: 9rem;
-}
-
-.search-skel-btn {
-  width: 3.5rem;
-  height: 1.75rem;
-  border-radius: 9999px;
-  flex-shrink: 0;
-}
-
-.search-skel-cover,
-.search-skel-title,
-.search-skel-sub,
-.search-skel-btn {
-  background: linear-gradient(90deg, transparent 25%, var(--c-skeleton) 50%, transparent 75%);
-  background-size: 200% 100%;
-  animation: search-shimmer 1.5s ease-in-out infinite;
-}
-
-.search-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 4rem 0;
-  color: var(--c-text-sub);
-}
-
-.search-empty-text {
-  font-size: 0.875rem;
-}
-
-.search-result {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem;
-  border-radius: 0.75rem;
-  cursor: pointer;
-  border-bottom: 1px solid var(--c-border);
-  transition: background 0.2s;
-
-  &:hover {
-    background: var(--c-hover);
-  }
-}
-
-.search-result-icon {
-  width: 1.25rem;
-  height: 1.25rem;
-  color: var(--c-text-sub);
-  flex-shrink: 0;
-}
-
-.search-result-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.search-result-name {
-  font-size: 0.875rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.search-result-artists {
-  font-size: 0.75rem;
-  color: var(--c-text-sub);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  margin-top: 2px;
-}
-
-.search-save-btn {
-  font-size: 0.75rem;
-  padding: 0.25rem 0.75rem;
-  border-radius: 9999px;
-  border: 1px solid var(--c-border);
-  color: var(--c-text-sub);
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: all 0.2s;
-
-  &:hover {
-    color: #fff;
-    background: var(--c-red);
-    border-color: var(--c-red);
-  }
-
-  &--saving {
-    opacity: 0.5;
-    pointer-events: none;
-  }
-}
-
-.search-saved-icon {
-  width: 1rem;
-  height: 1rem;
-  color: var(--c-green);
-  flex-shrink: 0;
-}
-
-.search-bottom {
-  text-align: center;
-  padding: 1rem 0;
-}
-
-.search-load-more {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.25rem;
-  font-size: 0.875rem;
-  cursor: pointer;
-  color: var(--c-text-sub);
-  transition: color 0.2s;
-
-  &:hover {
-    color: var(--c-red);
-  }
-}
-
-.search-spinner {
-  width: 0.875rem;
-  height: 0.875rem;
-  animation: spin 1s linear infinite;
-}
-
-.search-divider {
-  display: flex;
-  align-items: center;
-  padding: 0.5rem 0;
-}
-
-.search-divider-line {
-  flex: 1;
-  height: 1px;
-  background: var(--c-border);
 }
 
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -410,21 +402,5 @@ const artistNames = (m) => {
   100% { background-position: -200% 0; }
 }
 
-.search-modal-enter-active,
-.search-modal-leave-active { transition: opacity 0.3s ease; }
-.search-modal-enter-from,
-.search-modal-leave-to { opacity: 0; }
-
-.search-panel {
-  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
-}
-
-.search-modal-enter-from .search-panel {
-  transform: scale(0.95) translateY(-10px);
-  opacity: 0;
-}
-.search-modal-leave-to .search-panel {
-  transform: scale(0.95) translateY(-10px);
-  opacity: 0;
-}
+@include transition-fade-scale('search-modal', '.search-panel');
 </style>

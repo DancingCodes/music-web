@@ -15,6 +15,8 @@ import { toasts } from '../stores/toast.js'
 </script>
 
 <style lang="scss" scoped>
+@use '../styles/_transitions.scss' as *;
+
 .toast-container {
   position: fixed;
   top: 4rem;
@@ -49,13 +51,5 @@ import { toasts } from '../stores/toast.js'
   background: rgba(31, 41, 55, 0.8);
 }
 
-.toast-enter-active,
-.toast-leave-active {
-  transition: all 0.3s ease;
-}
-.toast-enter-from,
-.toast-leave-to {
-  opacity: 0;
-  transform: translateY(-12px);
-}
+@include transition-fade-slideY('toast');
 </style>

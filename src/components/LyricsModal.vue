@@ -144,165 +144,140 @@ defineExpose({ open, close })
 </style>
 
 <style lang="scss" scoped>
+@use '../styles/_transitions.scss' as *;
+
 .lyrics-overlay {
   position: fixed;
   z-index: 50;
   inset: 0;
   display: flex;
-}
 
-.lyrics-backdrop {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-}
-
-.lyrics-content {
-  position: relative;
-  z-index: 10;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-}
-
-.lyrics-left {
-  width: 40%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1.5rem;
-  padding: 0 2rem;
-}
-
-.lyrics-cover {
-  width: 18rem;
-  height: 18rem;
-  border-radius: 50%;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  object-fit: cover;
-
-  &--spinning {
-    animation: cover-spin 30s linear infinite;
-  }
-}
-
-.lyrics-meta {
-  text-align: center;
-}
-
-.lyrics-song-name {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #fff;
-  margin-bottom: 0.5rem;
-}
-
-.lyrics-artist {
-  font-size: 1.125rem;
-  color: var(--c-text-sub);
-}
-
-.lyrics-right {
-  width: 60%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding-right: 3rem;
-}
-
-.lyrics-empty {
-  text-align: center;
-  color: var(--c-text-sub);
-  font-size: 1.125rem;
-}
-
-.lyrics-scroll {
-  overflow-y: auto;
-  height: 75vh;
-
-  > * + * {
-    margin-top: 0.25rem;
-  }
-}
-
-.lyrics-line {
-  padding: 0.5rem 1rem;
-  border-radius: 0.75rem;
-  cursor: pointer;
-  transition: all 0.5s ease;
-
-  &--active {
-    font-size: 1.5rem;
-    font-weight: 700;
-    background: linear-gradient(to right, var(--c-red-400), var(--c-rose-300));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  .lyrics-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
   }
 
-  &--lrc {
-    color: var(--c-text-sub);
-    font-size: 1.125rem;
+  .lyrics-content {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
 
-    &:hover {
-      color: var(--c-text-sub);
+    .lyrics-left {
+      width: 40%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      padding: 0 2rem;
+      transition: transform 0.4s ease, opacity 0.4s ease;
+
+      .lyrics-cover {
+        width: 18rem;
+        height: 18rem;
+        border-radius: 50%;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        object-fit: cover;
+
+        &--spinning {
+          animation: cover-spin 30s linear infinite;
+        }
+      }
+
+      .lyrics-meta {
+        text-align: center;
+
+        .lyrics-song-name {
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: #fff;
+          margin-bottom: 0.5rem;
+        }
+
+        .lyrics-artist {
+          font-size: 1.125rem;
+          color: var(--c-text-sub);
+        }
+      }
+    }
+
+    .lyrics-right {
+      width: 60%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-right: 3rem;
+      transition: transform 0.4s ease 0.05s, opacity 0.4s ease 0.05s;
+
+      .lyrics-empty {
+        text-align: center;
+        color: var(--c-text-sub);
+        font-size: 1.125rem;
+      }
+
+      .lyrics-scroll {
+        overflow-y: auto;
+        height: 75vh;
+
+        > * + * {
+          margin-top: 0.25rem;
+        }
+      }
+
+      .lyrics-line {
+        padding: 0.5rem 1rem;
+        border-radius: 0.75rem;
+        cursor: pointer;
+        transition: all 0.5s ease;
+
+        &--active {
+          font-size: 1.5rem;
+          font-weight: 700;
+          background: linear-gradient(to right, var(--c-red-400), var(--c-rose-300));
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+
+        &--lrc {
+          color: var(--c-text-sub);
+          font-size: 1.125rem;
+
+          &:hover {
+            color: var(--c-text-sub);
+          }
+        }
+
+        &--plain {
+          color: var(--c-text-sub);
+          font-size: 1.125rem;
+        }
+      }
     }
   }
 
-  &--plain {
+  .lyrics-close {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    z-index: 20;
+    width: 1.5rem;
+    height: 1.5rem;
     color: var(--c-text-sub);
-    font-size: 1.125rem;
+    cursor: pointer;
+    transition: color 0.2s;
+
+    &:hover {
+      color: #fff;
+    }
   }
 }
 
-.lyrics-close {
-  position: absolute;
-  top: 1.5rem;
-  right: 1.5rem;
-  z-index: 20;
-  width: 1.5rem;
-  height: 1.5rem;
-  color: var(--c-text-sub);
-  cursor: pointer;
-  transition: color 0.2s;
+@keyframes cover-spin { to { transform: rotate(360deg); } }
 
-  &:hover {
-    color: #fff;
-  }
-}
-
-@keyframes cover-spin {
-  to { transform: rotate(360deg); }
-}
-
-.lyrics-modal-enter-active,
-.lyrics-modal-leave-active { transition: opacity 0.3s ease; }
-.lyrics-modal-enter-from,
-.lyrics-modal-leave-to { opacity: 0; }
-
-.lyrics-left {
-  transition: transform 0.4s ease, opacity 0.4s ease;
-}
-.lyrics-right {
-  transition: transform 0.4s ease 0.05s, opacity 0.4s ease 0.05s;
-}
-
-.lyrics-modal-enter-from .lyrics-left {
-  transform: translateX(-30px);
-  opacity: 0;
-}
-.lyrics-modal-enter-from .lyrics-right {
-  transform: translateX(30px);
-  opacity: 0;
-}
-.lyrics-modal-leave-to .lyrics-left {
-  transform: translateX(-30px);
-  opacity: 0;
-}
-.lyrics-modal-leave-to .lyrics-right {
-  transform: translateX(30px);
-  opacity: 0;
-}
+@include transition-fade-slideX('lyrics-modal', '.lyrics-left', '.lyrics-right');
 </style>
