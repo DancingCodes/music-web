@@ -144,134 +144,132 @@ defineExpose({ open, close })
 </style>
 
 <style lang="scss" scoped>
-.lyrics {
-  &-overlay {
-    position: fixed;
-    z-index: 50;
-    inset: 0;
-    display: flex;
+.lyrics-overlay {
+  position: fixed;
+  z-index: 50;
+  inset: 0;
+  display: flex;
+}
+
+.lyrics-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.lyrics-content {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.lyrics-left {
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 0 2rem;
+}
+
+.lyrics-cover {
+  width: 18rem;
+  height: 18rem;
+  border-radius: 50%;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  object-fit: cover;
+
+  &--spinning {
+    animation: cover-spin 30s linear infinite;
   }
+}
 
-  &-backdrop {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.6);
+.lyrics-meta {
+  text-align: center;
+}
+
+.lyrics-song-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.lyrics-artist {
+  font-size: 1.125rem;
+  color: var(--c-text-sub);
+}
+
+.lyrics-right {
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-right: 3rem;
+}
+
+.lyrics-empty {
+  text-align: center;
+  color: var(--c-text-sub);
+  font-size: 1.125rem;
+}
+
+.lyrics-scroll {
+  overflow-y: auto;
+  height: 75vh;
+
+  > * + * {
+    margin-top: 0.25rem;
   }
+}
 
-  &-content {
-    position: relative;
-    z-index: 10;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-  }
+.lyrics-line {
+  padding: 0.5rem 1rem;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.5s ease;
 
-  &-left {
-    width: 40%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1.5rem;
-    padding: 0 2rem;
-  }
-
-  &-cover {
-    width: 18rem;
-    height: 18rem;
-    border-radius: 50%;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-    object-fit: cover;
-
-    &--spinning {
-      animation: cover-spin 30s linear infinite;
-    }
-  }
-
-  &-meta {
-    text-align: center;
-  }
-
-  &-song-name {
+  &--active {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #fff;
-    margin-bottom: 0.5rem;
+    background: linear-gradient(to right, var(--c-red-400), var(--c-rose-300));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
-  &-artist {
-    font-size: 1.125rem;
-    color: var(--c-text-sub);
-  }
-
-  &-right {
-    width: 60%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding-right: 3rem;
-  }
-
-  &-empty {
-    text-align: center;
+  &--lrc {
     color: var(--c-text-sub);
     font-size: 1.125rem;
-  }
-
-  &-scroll {
-    overflow-y: auto;
-    height: 75vh;
-
-    > * + * {
-      margin-top: 0.25rem;
-    }
-  }
-
-  &-line {
-    padding: 0.5rem 1rem;
-    border-radius: 0.75rem;
-    cursor: pointer;
-    transition: all 0.5s ease;
-
-    &--active {
-      font-size: 1.5rem;
-      font-weight: 700;
-      background: linear-gradient(to right, var(--c-red-400), var(--c-rose-300));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    &--lrc {
-      color: var(--c-text-sub);
-      font-size: 1.125rem;
-
-      &:hover {
-        color: var(--c-text-sub);
-      }
-    }
-
-    &--plain {
-      color: var(--c-text-sub);
-      font-size: 1.125rem;
-    }
-  }
-
-  &-close {
-    position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
-    z-index: 20;
-    width: 1.5rem;
-    height: 1.5rem;
-    color: var(--c-text-sub);
-    cursor: pointer;
-    transition: color 0.2s;
 
     &:hover {
-      color: #fff;
+      color: var(--c-text-sub);
     }
+  }
+
+  &--plain {
+    color: var(--c-text-sub);
+    font-size: 1.125rem;
+  }
+}
+
+.lyrics-close {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 20;
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--c-text-sub);
+  cursor: pointer;
+  transition: color 0.2s;
+
+  &:hover {
+    color: #fff;
   }
 }
 

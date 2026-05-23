@@ -116,174 +116,170 @@ onMounted(load)
   flex-direction: column;
   padding: 1.5rem;
   overflow: hidden;
+}
 
-  &-toolbar {
-    display: flex;
-    gap: 0.625rem;
+.library-toolbar {
+  display: flex;
+  gap: 0.625rem;
+}
+
+.library-search-wrap {
+  flex: 1;
+  position: relative;
+}
+
+.library-search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1rem;
+  height: 1rem;
+  color: var(--c-text-sub);
+  pointer-events: none;
+}
+
+.library-search-input {
+  width: 100%;
+  height: 2.5rem;
+  padding: 0 1rem 0 2.25rem;
+  border-radius: 0.75rem;
+  box-sizing: border-box;
+  background: transparent;
+  border: 1px solid var(--c-border);
+  color: var(--c-text);
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &::placeholder {
+    color: var(--c-text-sub);
   }
 
-  &-search {
-    &-wrap {
-      flex: 1;
-      position: relative;
-    }
-
-    &-icon {
-      position: absolute;
-      left: 0.75rem;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 1rem;
-      height: 1rem;
-      color: var(--c-text-sub);
-      pointer-events: none;
-    }
-
-    &-input {
-      width: 100%;
-      height: 2.5rem;
-      padding: 0 1rem 0 2.25rem;
-      border-radius: 0.75rem;
-      box-sizing: border-box;
-      background: transparent;
-      border: 1px solid var(--c-border);
-      color: var(--c-text);
-      font-size: 0.875rem;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-
-      &::placeholder {
-        color: var(--c-text-sub);
-      }
-
-      &:focus {
-        border-color: var(--c-red);
-        box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.2);
-      }
-    }
-
-    &-btn {
-      height: 2.5rem;
-      padding: 0 1.25rem;
-      border-radius: 0.75rem;
-      display: flex;
-      align-items: center;
-      font-size: 0.875rem;
-      color: #fff;
-      cursor: pointer;
-      background: linear-gradient(to right, var(--c-red), var(--c-rose-400));
-      transition: box-shadow 0.2s, transform 0.2s;
-
-      &:hover {
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        transform: scale(1.02);
-      }
-    }
+  &:focus {
+    border-color: var(--c-red);
+    box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.2);
   }
+}
 
-  &-cloud-btn {
-    height: 2.5rem;
-    padding: 0 1rem;
-    border-radius: 0.75rem;
-    display: flex;
-    align-items: center;
-    border: 1px solid var(--c-border);
-    font-size: 0.875rem;
+.library-search-btn {
+  height: 2.5rem;
+  padding: 0 1.25rem;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  font-size: 0.875rem;
+  color: #fff;
+  cursor: pointer;
+  background: linear-gradient(to right, var(--c-red), var(--c-rose-400));
+  transition: box-shadow 0.2s, transform 0.2s;
+
+  &:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    transform: scale(1.02);
+  }
+}
+
+.library-cloud-btn {
+  height: 2.5rem;
+  padding: 0 1rem;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--c-border);
+  font-size: 0.875rem;
+  color: var(--c-text);
+  cursor: pointer;
+  transition: border-color 0.2s;
+
+  &:hover {
+    border-color: var(--c-text-sub);
+  }
+}
+
+.library-theme-btn {
+  height: 2.5rem;
+  width: 2.5rem;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--c-border);
+  color: var(--c-text-sub);
+  cursor: pointer;
+  transition: color 0.2s;
+
+  &:hover {
     color: var(--c-text);
-    cursor: pointer;
-    transition: border-color 0.2s;
+  }
+}
 
-    &:hover {
-      border-color: var(--c-text-sub);
-    }
+.library-theme-icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.library-total {
+  font-size: 0.75rem;
+  color: var(--c-text-sub);
+  margin-top: 0.75rem;
+  margin-left: 0.25rem;
+}
+
+.library-scroll {
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-behavior: smooth;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.library-bottom {
+  display: flex;
+  justify-content: center;
+  padding: 1rem 0;
+}
+
+.library-load-more {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  color: var(--c-text-sub);
+  transition: color 0.2s;
+
+  &:hover {
+    color: var(--c-red);
   }
 
-  &-theme {
-    &-btn {
-      height: 2.5rem;
-      width: 2.5rem;
-      border-radius: 0.75rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid var(--c-border);
-      color: var(--c-text-sub);
-      cursor: pointer;
-      transition: color 0.2s;
-
-      &:hover {
-        color: var(--c-text);
-      }
-    }
-
-    &-icon {
-      width: 1rem;
-      height: 1rem;
-    }
-  }
-
-  &-total {
-    font-size: 0.75rem;
+  &--disabled {
     color: var(--c-text-sub);
-    margin-top: 0.75rem;
-    margin-left: 0.25rem;
+    pointer-events: none;
   }
+}
 
-  &-scroll {
-    flex: 1;
-    overflow-y: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    scroll-behavior: smooth;
+.library-spinner {
+  width: 0.875rem;
+  height: 0.875rem;
+  animation: spin 1s linear infinite;
+}
 
-    &::-webkit-scrollbar {
-      display: none;
-    }
-  }
+.library-divider {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0;
+}
 
-  &-bottom {
-    display: flex;
-    justify-content: center;
-    padding: 1rem 0;
-  }
-
-  &-load-more {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
-    cursor: pointer;
-    color: var(--c-text-sub);
-    transition: color 0.2s;
-
-    &:hover {
-      color: var(--c-red);
-    }
-
-    &--disabled {
-      color: var(--c-text-sub);
-      pointer-events: none;
-    }
-  }
-
-  &-spinner {
-    width: 0.875rem;
-    height: 0.875rem;
-    animation: spin 1s linear infinite;
-  }
-
-  &-divider {
-    display: flex;
-    align-items: center;
-    padding: 0.5rem 0;
-
-    &-line {
-      flex: 1;
-      height: 1px;
-      background: var(--c-border);
-    }
-  }
+.library-divider-line {
+  flex: 1;
+  height: 1px;
+  background: var(--c-border);
 }
 
 @keyframes spin { to { transform: rotate(360deg); } }

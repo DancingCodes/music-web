@@ -18,40 +18,38 @@
   border-radius: 0.75rem;
 }
 
-.skeleton {
-  &-index {
-    width: 1.5rem;
-    height: 0.75rem;
-    border-radius: 0.375rem;
-    flex-shrink: 0;
-  }
+.skeleton-index {
+  width: 1.5rem;
+  height: 0.75rem;
+  border-radius: 0.375rem;
+  flex-shrink: 0;
+}
 
-  &-cover {
-    width: 3rem;
-    height: 3rem;
-    border-radius: 0.75rem;
-    flex-shrink: 0;
-  }
+.skeleton-cover {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.75rem;
+  flex-shrink: 0;
+}
 
-  &-info {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
+.skeleton-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
 
-  &-title {
-    height: 0.875rem;
-    border-radius: 0.375rem;
-    width: 12rem;
-  }
+.skeleton-title {
+  height: 0.875rem;
+  border-radius: 0.375rem;
+  width: 12rem;
+}
 
-  &-sub {
-    height: 0.75rem;
-    border-radius: 0.375rem;
-    width: 8rem;
-  }
+.skeleton-sub {
+  height: 0.75rem;
+  border-radius: 0.375rem;
+  width: 8rem;
 }
 
 .skeleton-index,
